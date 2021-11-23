@@ -1,0 +1,63 @@
+:root {
+  --clr-black: 245 0% 0%;
+  --clr-gray-900: 245 0% 15%;
+  --clr-gray-800: 245 0% 25%;
+  --clr-gray-700: 245 0% 35%;
+  --clr-gray-600: 245 0% 45%;
+  --clr-gray-500: 245 0% 55%;
+  --clr-gray-400: 245 0% 65%;
+  --clr-gray-300: 245 0% 75%;
+  --clr-gray-200: 245 0% 85%;
+  --clr-gray-100: 245 0% 95%;
+  --clr-white: 245 0% 100%;
+
+  --clr-primary-900: 242 77% 24%;
+  --clr-primary-800: 242 70% 30%;
+  --clr-primary-700: 242 63% 39%;
+  --clr-primary-600: 243 57% 49%;
+  --clr-primary-500: 243 74% 59%;
+  --clr-primary-400: 243 78% 70%;
+  --clr-primary-300: 244 85% 77%;
+  --clr-primary-200: 244 92% 85%;
+  --clr-primary-100: 244 89% 93%;
+
+  --clr-accent-900: 206 100% 22%;
+  --clr-accent-800: 201 100% 26%;
+  --clr-accent-700: 197 100% 33%;
+  --clr-accent-600: 192 100% 39%;
+  --clr-accent-500: 187 100% 45%;
+  --clr-accent-400: 183 87% 59%;
+  --clr-accent-300: 178 91% 68%;
+  --clr-accent-200: 173 94% 79%;
+  --clr-accent-100: 168 93% 89%;
+
+  --clr-success-900: 146 81% 21%;
+  --clr-success-800: 140 75% 26%;
+  --clr-success-700: 135 69% 34%;
+  --clr-success-600: 129 63% 42%;
+  --clr-success-500: 124 59% 51%;
+  --clr-success-400: 119 66% 64%;
+  --clr-success-300: 113 77% 73%;
+  --clr-success-200: 108 86% 83%;
+  --clr-success-100: 102 86% 92%;
+
+  --clr-warn-900: 38 100% 24%;
+  --clr-warn-800: 40 100% 29%;
+  --clr-warn-700: 42 100% 36%;
+  --clr-warn-600: 43 100% 43%;
+  --clr-warn-500: 45 100% 50%;
+  --clr-warn-400: 46 100% 62%;
+  --clr-warn-300: 48 100% 70%;
+  --clr-warn-200: 49 100% 80%;
+  --clr-warn-100: 51 100% 90%;
+
+  --clr-danger-900: 339 86% 26%;
+  --clr-danger-800: 345 81% 32%;
+  --clr-danger-700: 350 77% 41%;
+  --clr-danger-600: 355 72% 50%;
+  --clr-danger-500: 0 100% 59%;
+  --clr-danger-400: 5 100% 69%;
+  --clr-danger-300: 11 100% 75%;
+  --clr-danger-200: 15 100% 84%;
+  --clr-danger-100: 20 100% 92%;
+}

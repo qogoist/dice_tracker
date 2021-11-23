@@ -1,0 +1,795 @@
+@import url(colors.css);
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+:root {
+  font-size: 1rem;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  color: hsl(var(--clr-gray-900));
+
+  --t-speed: 800ms;
+  --t-speed-3-4: calc(3 * var(--t-speed-4));
+  --t-speed-2: calc(var(--t-speed) / 2);
+  --t-speed-4: calc(var(--t-speed) / 4);
+  --t-speed-8: calc(var(--t-speed) / 8);
+  --br: 0.5rem;
+
+  --gradient-rotation: 135deg;
+  --background-gradient: linear-gradient(
+    var(--gradient-rotation),
+    hsl(var(--clr-primary-500)) 0%,
+    hsl(var(--clr-accent-500)) 100%
+  );
+}
+
+#root {
+  overflow: hidden;
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 5rem auto 3.5rem;
+  grid-template-areas:
+    "content"
+    "content"
+    "navbar";
+}
+
+.main {
+  position: relative;
+  grid-area: content;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  padding: 1.5rem;
+  overflow: auto;
+  background: hsl(var(--clr-primary-500));
+  background: var(--background-gradient);
+}
+
+header {
+  grid-area: navbar;
+  position: relative;
+  background: hsl(var(--clr-primary-500));
+  text-align: left;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  z-index: 1;
+}
+
+nav {
+  background: hsl(var(--clr-primary-500));
+  opacity: 0.95;
+  position: absolute;
+  text-align: right;
+  right: 0;
+  bottom: 100%;
+  width: 100%;
+  transform: scale(1, 0);
+  transform-origin: bottom;
+  transition: transform var(--t-speed-3-4) cubic-bezier(0.5, -0.25, 0.5, 1.25) var(--t-speed-4);
+}
+
+nav ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+input:-internal-autofill-selected {
+  transition: background 5000s linear, color 5000s linear;
+}
+
+/* ====================================== */
+/* Generic Modal Components */
+/* ====================================== */
+
+.modal {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  transform: translateY(-50%);
+  transition: transform var(--t-speed) ease-in-out;
+}
+
+.modal-btn-close {
+  --btn-clr: var(--clr-gray-100);
+  --btn-clr-back: var(--clr-danger-500);
+  --btn-clr-hover: var(--clr-gray-100);
+  --btn-clr-hover-back: var(--clr-accent-600);
+
+  cursor: pointer;
+  grid-area: close;
+  place-self: start end;
+  font-size: 2rem;
+  transition: color var(--t-speed-2) ease-in-out, transform var(--t-speed-2) ease-in-out;
+}
+
+.modal-btn-close:hover,
+.modal-btn-close:focus-visible {
+  color: hsl(var(--clr-danger-600) / 0.8);
+  transform: scale(1.1);
+}
+
+.backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: #000000e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--t-speed-2) ease-in-out;
+}
+
+.backdrop.active {
+  opacity: 1;
+}
+
+.backdrop.active > .modal {
+  transform: translateY(0);
+}
+
+.backdrop.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ====================================== */
+/* Generic Buttons */
+/* ====================================== */
+
+.btn,
+.btn-outline {
+  --btn-clr: var(--clr-gray-100);
+  --btn-clr-back: var(--clr-primary-500);
+  --btn-clr-hover: var(--btn-clr-back);
+  --btn-clr-hover-back: var(--btn-clr);
+  position: relative;
+  height: fit-content;
+  width: fit-content;
+  isolation: isolate;
+  display: inline-block;
+  color: hsl(var(--btn-clr));
+  background: hsl(var(--btn-clr-back));
+  border-radius: 100vw;
+  border: 0;
+  outline: 0;
+  overflow: hidden;
+  padding: 0.5em 1.5em;
+  font-family: inherit;
+  font-size: 1rem;
+  text-decoration: none;
+  line-height: inherit;
+  cursor: pointer;
+  transition: color var(--t-speed-2) linear, transform var(--t-speed-8) ease-in-out;
+}
+
+.btn-outline {
+  outline: 0.125em solid hsl(var(--btn-clr));
+}
+
+.btn:hover,
+.btn:focus-visible,
+.btn-outline:hover,
+.btn-outline:focus-visible {
+  color: hsl(var(--btn-clr-hover));
+}
+
+.btn::after,
+.btn-outline::after {
+  --transform-origin: right;
+  --transform-origin-after: left;
+  content: "";
+  position: absolute;
+  inset: -10px; /*Should really be "inset: 0" but that caused gaps 🤷*/
+  z-index: -1;
+  background: hsl(var(--btn-clr-hover-back));
+  transform: scale(0, 1);
+  transform-origin: var(--transform-origin);
+  transition: transform var(--t-speed-4) ease-in-out;
+}
+
+.btn:hover::after,
+.btn:focus-visible::after,
+.btn-outline:hover::after,
+.btn-outline:focus-visible::after {
+  transform-origin: var(--transform-origin-after);
+  transform: scale(1, 1);
+}
+
+.btn:active,
+.btn-outline:active {
+  transform: scale(0.95);
+}
+
+/* ====================================== */
+/* Generic Card Components */
+/* ====================================== */
+
+.card {
+  --card-clr-bg: var(--clr-gray-100);
+  --card-clr-txt: var(--clr-gray-800);
+  --card-clr-head: var(--clr-gray-900);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  background: hsl(var(--card-clr-bg) / 0.7);
+  color: hsl(var(--card-clr-txt));
+  border-radius: var(--br);
+  box-shadow: 0rem 0.5rem 1rem 0rem hsla(var(--clr-gray-900) / 0.5);
+}
+
+.card h1 {
+  color: hsl(var(--card-clr-head));
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+.card h2 {
+  color: hsl(var(--card-clr-head));
+  margin-bottom: 1em;
+}
+
+/* ====================================== */
+/* Generic Chart Components */
+/* ====================================== */
+
+.chart {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.signout {
+  text-transform: inherit;
+  font-size: inherit;
+  --btn-clr: var(--clr-gray-100);
+  --btn-clr-back: var(--clr-primary-500);
+}
+
+.auth-btn {
+  --btn-clr: var(--clr-gray-100);
+  --btn-clr-back: var(--clr-primary-500);
+  --btn-clr-hover: var(--clr-gray-100);
+  --btn-clr-hover-back: var(--clr-accent-600);
+  font-size: 1.25rem;
+  margin: 1rem 0;
+  box-shadow: 0 0.3em 0.4em 0 hsl(var(--clr-gray-900) / 0.5);
+}
+
+.auth-backdrop {
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  place-items: center;
+  background: hsl(var(--clr-primary-500));
+  background: var(--background-gradient);
+}
+
+.auth-box {
+  width: clamp(20%, 25rem, 90%);
+}
+
+.auth-box p,
+.auth-box a {
+  font-weight: 300;
+  color: hsl(var(--card-clr-txt) / 1);
+  margin: 0.5em 0;
+}
+
+.auth-box a {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  color: hsl(var(--clr-primary-500));
+  outline: 0;
+  transition: transform var(--t-speed-4) ease-in-out;
+}
+
+.auth-box a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0.05em;
+  background: hsl(var(--clr-primary-500));
+  transform: scale(0, 1);
+  transform-origin: right;
+  transition: transform var(--t-speed-4) ease-in-out;
+}
+
+.auth-box a:hover,
+.auth-box a:focus-visible {
+  transform: scale(1.1);
+}
+
+.auth-box a:hover::after,
+.auth-box a:focus-visible::after {
+  transform: scale(1, 1);
+  transform-origin: left;
+}
+
+.auth-box a:active {
+  transform: scale(0.95);
+}
+
+.session-box {
+  width: clamp(20%, 25rem, 100%);
+}
+
+.auth-form,
+.new-session-form {
+  width: 100%;
+  font-weight: 300;
+}
+
+.new-session-form > h2 {
+  margin: 0;
+}
+
+.new-session-btn {
+  --btn-clr: var(--clr-gray-100);
+  --btn-clr-back: var(--clr-primary-500);
+  --btn-clr-hover: var(--clr-gray-100);
+  --btn-clr-hover-back: var(--clr-accent-600);
+  font-size: 1.25rem;
+  box-shadow: 0 0.3em 0.4em 0 hsl(var(--clr-gray-900) / 0.5);
+}
+
+.new-session-form .dice-grid {
+  margin-bottom: 2em;
+}
+
+.form-label {
+  position: relative;
+  width: 100%;
+  margin: 1em 0;
+}
+
+.form-label input {
+  width: 100%;
+  background: transparent;
+  color: inherit;
+  border: none;
+  border-bottom: 0.1em solid hsl(var(--card-clr-txt) / 0.4);
+  outline: none;
+  padding: 0.5em 0;
+  font-size: 1rem;
+}
+
+.form-label label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  transform-origin: top left;
+  transition: transform var(--t-speed-4) ease-in-out, color var(--t-speed-4) linear;
+}
+
+.form-label input:focus-visible ~ label,
+.form-label input:valid ~ label,
+.form-label input:not(:placeholder-shown) ~ label {
+  transform: translateY(-100%) scale(0.9);
+  color: hsl(var(--card-clr-accent, var(--clr-primary-500)));
+}
+
+.form-label input:not(:placeholder-shown):not(:valid) {
+  border-bottom: 0.1em solid hsl(var(--clr-danger-600));
+}
+
+.dice-grid {
+  --min-width: 100px;
+  margin: 0 auto;
+  width: 90%;
+  display: grid;
+  grid-auto-rows: 50px;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(var(--min-width), 1fr));
+}
+
+.dice-stats-grid {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.grid-item {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dice-box-label,
+.dice-btn {
+  --btn-clr: var(--clr-primary-500);
+  --btn-clr-back: var(--clr-gray-100) / 0.75;
+  box-shadow: 0em 0.3em 0.4em -0.1em hsl(var(--clr-gray-900) / 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  font-weight: bold;
+  letter-spacing: 0.2ch;
+}
+
+.dice-box-label:focus-visible {
+  outline: 0.2rem solid hsl(var(--btn-clr) / 0.5);
+}
+
+.dice-box-check {
+  position: absolute;
+  visibility: hidden;
+}
+
+.dice-box-check:checked ~ .dice-box-label {
+  color: hsl(var(--btn-clr-hover));
+  background: hsl(var(--btn-clr-hover-back));
+}
+
+.session-grid {
+  width: clamp(20%, 25rem, 100%);
+  height: 100%;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr auto;
+  grid-template-rows: 3rem fit-content min-content;
+  grid-template-areas:
+    "title title end-btn"
+    "stats stats stats"
+    "dice dice dice";
+}
+
+.session-grid > h1 {
+  grid-area: title;
+  color: hsl(var(--clr-primary-100));
+  text-shadow: 0rem 0.5rem 0.75rem hsl(var(--clr-gray-900) / 0.5);
+}
+
+.session-grid > button {
+  grid-area: end-btn;
+  justify-self: end;
+  box-shadow: 0em 0.5em 1em 0em hsl(var(--clr-gray-900) / 0.5);
+}
+
+.session-grid > .card {
+  width: 100%;
+  height: fit-content;
+}
+
+.session-grid > .stats {
+  grid-area: stats;
+  min-height: 250px;
+  height: 100%;
+}
+
+.stats > .stat-selection {
+  width: calc(100% - 2rem);
+  padding: 0.25rem 0rem;
+  color: inherit;
+  font-size: 1rem;
+  border: none;
+  border-bottom: 1px solid hsl(var(--clr-gray-800) / 0.8);
+  background: transparent;
+}
+
+.stats > .stat-selection > option {
+  background: hsl(var(--clr-gray-100));
+}
+
+.stats > .dice-grid {
+  --min-width: 10ch;
+  grid-auto-rows: auto;
+  display: none;
+}
+
+.stats > .dice-grid > button {
+  height: fit-content;
+  font-size: 0.75rem;
+}
+
+.session-grid > .dice-picker {
+  grid-area: dice;
+}
+
+.session-grid .dice-btn,
+.dice-modal .dice-btn {
+  --btn-clr: var(--clr-gray-100);
+  --btn-clr-back: var(--clr-primary-500);
+  --btn-clr-hover: var(--clr-gray-100);
+  --btn-clr-hover-back: var(--clr-accent-600);
+}
+
+.dice-modal {
+  width: clamp(20%, 400px, calc(100% - 3rem));
+  max-height: 500px;
+  background: hsl(var(--clr-gray-100) / 0.75);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "title ... close"
+    "numbers numbers numbers";
+}
+
+.dice-modal > h1 {
+  grid-area: title;
+  place-self: start start;
+}
+
+.dice-modal > .dice-grid {
+  grid-area: numbers;
+  place-self: center center;
+  overflow: auto;
+  max-height: 100%;
+  padding-bottom: 2rem;
+}
+
+.dice-modal > .dice-grid::-webkit-scrollbar {
+  width: 1rem;
+}
+
+.dice-modal > .dice-grid::-webkit-scrollbar-track,
+.dice-modal > .dice-grid::-webkit-scrollbar-thumb {
+  border: 0.25rem solid transparent;
+  background-clip: padding-box;
+  border-radius: 100vw;
+}
+
+.dice-modal > .dice-grid::-webkit-scrollbar-track {
+  background-color: hsl(var(--clr-gray-900) / 0.1);
+}
+
+.dice-modal > .dice-grid::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--clr-primary-500) / 0.9);
+}
+
+/* ====================================== */
+/* Alerts */
+/* ====================================== */
+
+.alert-box {
+  --box-clr: var(--clr-primary-800);
+  --box-clr-back: var(--clr-primary-200);
+
+  position: relative;
+  max-height: 3em;
+  width: 100%;
+  padding: 1em 1em;
+  margin-bottom: 1em;
+  border-radius: var(--br);
+  background: hsl(var(--box-clr-back) / 0.4);
+  color: hsl(var(--box-clr));
+  font-weight: 300;
+  transition: transform var(--t-speed-8) ease-in var(--t-speed-8), max-height 100ms linear,
+    padding 100ms linear;
+  transform-origin: left;
+  overflow: hidden;
+}
+
+.alert-box::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0.5em;
+  background: hsl(var(--box-clr) / 0.8);
+  border-radius: var(--br);
+}
+
+.alert-box.disabled {
+  transform: scale(0, 1);
+  max-height: 0;
+  padding: 0;
+  transition: transform var(--t-speed-8) ease-in,
+    max-height var(--t-speed-8) linear var(--t-speed-8),
+    padding var(--t-speed-8) linear var(--t-speed-8);
+}
+
+.alert-box.error {
+  --box-clr: var(--clr-danger-700);
+  --box-clr-back: var(--clr-danger-200);
+}
+
+/* ====================================== */
+/* Navigation related components */
+/* ====================================== */
+
+.nav-item {
+  margin: 1rem;
+  color: hsl(var(--clr-gray-100));
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: 1.25em;
+  opacity: 0;
+  transition: opacity var(--t-speed-4) ease-in-out;
+}
+
+.nav-link,
+.nav-link:visited {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--t-speed-4) ease-in-out;
+}
+
+.nav-link:hover,
+.nav-link:focus-visible,
+.nav-link.active {
+  color: hsl(var(--clr-accent-100));
+}
+
+.nav-toggle {
+  display: none;
+}
+
+.nav-toggle:checked ~ nav {
+  transform: scale(1);
+}
+
+.nav-toggle:checked ~ nav .nav-item {
+  opacity: 1;
+  transition: opacity var(--t-speed-4) ease-in-out var(--t-speed-3-4);
+}
+
+.nav-toggle-label {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin-right: 1rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.logo {
+  color: hsl(var(--clr-gray-100));
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.3ch;
+  text-decoration: none;
+  font-size: 1.5em;
+  margin: auto 0;
+}
+
+/* ====================================== */
+/* Media Queries for Desktop Version */
+/* ====================================== */
+
+@media screen and (min-width: 55rem) {
+  :root {
+    --gradient-rotation: 45deg;
+  }
+
+  #root {
+    grid-template-areas:
+      "navbar"
+      "content"
+      "content";
+  }
+
+  .session-grid {
+    width: 100%;
+    grid-template-columns: 1rem min-content 1fr auto 1rem;
+    grid-template-rows: 3rem 1fr 1fr;
+    grid-template-areas:
+      "... title title end-btn ..."
+      "... dice stats stats ..."
+      "... dice stats stats ...";
+  }
+
+  .stats > .dice-grid {
+    display: grid;
+  }
+
+  .stats > .stat-selection {
+    display: none;
+  }
+
+  .nav-toggle-label {
+    display: none;
+  }
+
+  header {
+    display: grid;
+    gap: 0rem;
+    grid-template-columns: 2rem auto auto 2rem;
+  }
+
+  .logo {
+    grid-column: 2 / span 1;
+  }
+
+  nav {
+    all: unset;
+    grid-column: 3 / span 1;
+    place-self: center end;
+  }
+
+  .nav-item {
+    opacity: 1;
+    margin: 0 0 0 1em;
+    position: relative;
+  }
+
+  .nav-link::before {
+    content: "";
+    position: absolute;
+    background: hsl(var(--clr-accent-100));
+    height: 0.2em;
+    width: 100%;
+    top: -1.3em;
+    transform: scale(0, 1);
+    transform-origin: top left;
+    transition: transform var(--t-speed-4) ease-in-out;
+  }
+
+  .nav-link:hover::before,
+  .nav-link:focus-visible::before,
+  .nav-link.active::before {
+    transform: scale(1);
+  }
+
+  nav ul {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+}
+
+/* ====================================== */
+/* Burger Menu with Animation :) */
+/* ====================================== */
+
+.nav-toggle-label span,
+.nav-toggle-label span::before,
+.nav-toggle-label span::after {
+  background-color: hsl(var(--clr-gray-100));
+  display: block;
+  height: 0.2em;
+  width: 1.8em;
+  border-radius: 0.2em;
+  position: relative;
+  transition: all var(--t-speed) cubic-bezier(0.5, -0.4, 0.5, 1.4);
+}
+
+.nav-toggle-label span::before,
+.nav-toggle-label span::after {
+  content: "";
+  position: absolute;
+}
+
+.nav-toggle-label span::before {
+  transform: translateY(200%);
+}
+
+.nav-toggle-label span::after {
+  transform: translateY(-200%);
+}
+
+.nav-toggle:checked ~ .nav-toggle-label span::before {
+  transform: rotate(90deg);
+}
+
+.nav-toggle:checked ~ .nav-toggle-label span::after {
+  transform: rotate(180deg);
+  opacity: 0;
+}
+
+.nav-toggle:checked ~ .nav-toggle-label span {
+  transform: rotate(225deg);
+}
