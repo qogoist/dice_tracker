@@ -76,6 +76,7 @@ nav ul {
 
 form {
   display: flex;
+  gap: 2rem;
   flex-direction: column;
   align-items: center;
 }
@@ -219,6 +220,7 @@ input:-internal-autofill-selected {
   --card-clr-txt: var(--clr-gray-800);
   --card-clr-head: var(--clr-gray-900);
   display: flex;
+  gap: 1rem;
   flex-direction: column;
   align-items: center;
   padding: 1.5rem;
@@ -230,13 +232,11 @@ input:-internal-autofill-selected {
 
 .card h1 {
   color: hsl(var(--card-clr-head));
-  margin-bottom: 1em;
   text-align: center;
 }
 
 .card h2 {
   color: hsl(var(--card-clr-head));
-  margin-bottom: 1em;
 }
 
 /* ====================================== */
@@ -265,7 +265,6 @@ input:-internal-autofill-selected {
   --btn-clr-hover: var(--clr-gray-100);
   --btn-clr-hover-back: var(--clr-accent-600);
   font-size: 1.25rem;
-  margin: 1rem 0;
   box-shadow: 0 0.3em 0.4em 0 hsl(var(--clr-gray-900) / 0.5);
 }
 
@@ -336,10 +335,6 @@ input:-internal-autofill-selected {
   font-weight: 300;
 }
 
-.new-session-form > h2 {
-  margin: 0;
-}
-
 .new-session-btn {
   --btn-clr: var(--clr-gray-100);
   --btn-clr-back: var(--clr-primary-500);
@@ -349,14 +344,9 @@ input:-internal-autofill-selected {
   box-shadow: 0 0.3em 0.4em 0 hsl(var(--clr-gray-900) / 0.5);
 }
 
-.new-session-form .dice-grid {
-  margin-bottom: 2em;
-}
-
 .form-label {
   position: relative;
   width: 100%;
-  margin: 1em 0;
 }
 
 .form-label input {
@@ -592,6 +582,7 @@ input:-internal-autofill-selected {
 }
 
 .alert-box.disabled {
+  display: none;
   transform: scale(0, 1);
   max-height: 0;
   padding: 0;

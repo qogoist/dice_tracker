@@ -22,11 +22,14 @@ const App: React.FC = () => {
       <ColorProvider>
         <AuthProvider>
           <Routes>
-            <Route path="/*" element={
-              <PrivateRoute>
-                <MainApp />
-              </PrivateRoute>
-            } />
+            <Route
+              path="/*"
+              element={
+                <PrivateRoute>
+                  <MainApp />
+                </PrivateRoute>
+              }
+            />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
             <Route path="/password-reset" element={<PasswordReset />} />

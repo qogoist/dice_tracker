@@ -13,7 +13,7 @@ const MainContent: React.FC = () => {
     <SessionProvider>
       <div className="main">
         <Routes>
-          <Route path="/home" element={<Dashboard />} />
+          <Route path="/*" element={<Dashboard />} />
           <Route path="/new-session" element={<NewSession />} />
           <Route path="/stats" element={<Stats />} />
           <Route path="/settings" element={<Settings />} />
