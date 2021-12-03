@@ -20,7 +20,7 @@ const NewSession: React.FC = () => {
     },
   });
   const [err, setErr] = useState<boolean>(false);
-  const navigate= useNavigate();
+  const navigate = useNavigate();
   const { startSession } = useSession();
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -68,7 +68,7 @@ const NewSession: React.FC = () => {
   };
 
   return (
-    <div className="session-box">
+    <div className="content">
       <div className="card">
         <h1 className="card-heading">New Session</h1>
         <form ref={formRef} onSubmit={handleSubmit} className="new-session-form">

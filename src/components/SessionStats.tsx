@@ -14,7 +14,7 @@ const SessionStats: React.FC<Props> = ({ stats }) => {
   const [labels, setLabels] = useState<string[]>([]);
   const [datasets, setDatasets] = useState<ChartDataset<"line">[]>([]);
   const [overviewSets, setOverviewSets] = useState<ChartDataset<"doughnut">[]>([]);
-  const [activeChart, setActiveChart] = useState<Dice | "Overview">("D20");
+  const [activeChart, setActiveChart] = useState<Dice | "Overview">("Overview");
   const colors = useColor();
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const SessionStats: React.FC<Props> = ({ stats }) => {
 
       setOverviewSets(dataset);
     } else {
-      const graphStats: IDieStats = stats[activeChart];
+      const graphStats: IDieStats = stats[activeChart] as IDieStats;
       let graphLabels: string[] = [];
 
       for (let i = 0; i < graphStats.rolls; i++) {

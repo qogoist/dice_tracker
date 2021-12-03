@@ -6,7 +6,7 @@ import SessionSummary from "./SessionSummary";
 const SessionList: React.FC = () => {
   const { sessions } = useSession();
   return (
-    <div>
+    <div className="session-list">
       {sessions?.map(session => (
         <SessionSummary key={session._id} session={session} />
       ))}

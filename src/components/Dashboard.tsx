@@ -1,13 +1,18 @@
 import React from "react";
+import { useSession } from "../contexts/SessionContext";
 
 import Card from "./Card";
 import SessionList from "./SessionList";
+import SessionStats from "./SessionStats";
 
 const Dashboard: React.FC = () => {
-  //URGENT: Actually implement this, lel :)
+  const { stats } = useSession();
+
   return (
-    <div>
-      <Card>Stats overview</Card>
+    <div className="dashboard content">
+      <Card className="stats">
+        <SessionStats stats={stats!} />
+      </Card>
       <SessionList />
     </div>
   );

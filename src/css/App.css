@@ -85,6 +85,10 @@ input:-internal-autofill-selected {
   transition: background 5000s linear, color 5000s linear;
 }
 
+.content {
+  width: clamp(20%, 25rem, 100%);
+}
+
 /* ====================================== */
 /* Generic Modal Components */
 /* ====================================== */
@@ -252,6 +256,9 @@ input:-internal-autofill-selected {
   margin-bottom: 0.5rem;
 }
 
+/* ====================================== */
+/* Auth Stuff */
+/* ====================================== */
 .signout {
   text-transform: inherit;
   font-size: inherit;
@@ -323,10 +330,6 @@ input:-internal-autofill-selected {
 
 .auth-box a:active {
   transform: scale(0.95);
-}
-
-.session-box {
-  width: clamp(20%, 25rem, 100%);
 }
 
 .auth-form,
@@ -432,7 +435,6 @@ input:-internal-autofill-selected {
 }
 
 .session-grid {
-  width: clamp(20%, 25rem, 100%);
   height: 100%;
   display: grid;
   gap: 1rem;
@@ -545,6 +547,26 @@ input:-internal-autofill-selected {
 
 .dice-modal > .dice-grid::-webkit-scrollbar-thumb {
   background-color: hsl(var(--clr-primary-500) / 0.9);
+}
+
+/* ====================================== */
+/* Dashboard */
+/* ====================================== */
+
+.dashboard {
+  display: grid;
+  gap: 1rem;
+  grid-template-areas:
+    "stats"
+    "session-list";
+}
+
+.dashboard > .stats {
+  grid-area: stats;
+}
+
+.dashboard > .session-list {
+  grid-area: session-list;
 }
 
 /* ====================================== */
@@ -671,6 +693,11 @@ input:-internal-autofill-selected {
       "navbar"
       "content"
       "content";
+  }
+
+  .dashboard {
+    width: 100%;
+    grid-template-areas: "session-list stats stats";
   }
 
   .session-grid {

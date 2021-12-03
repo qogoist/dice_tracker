@@ -10,6 +10,7 @@ export type ISessionContext = {
   startSession: (state: ISession) => void;
   endSession: () => void;
   addRoll: (roll: IRoll) => void;
+  stats: IStats;
 };
 
 export const SessionContext = createContext<Partial<ISessionContext>>({});
@@ -22,8 +23,20 @@ export const SessionProvider: React.FC = ({ children }) => {
   const { currentUser } = useAuth();
   const [currSession, setCurrSession] = useState<ISession>();
   const [sessions, setSessions] = useState<ISession[]>([]);
+  const [stats, setStats] = useState<IStats>({
+    rolls: [],
+    usedDice: ["D4", "D6", "D8", "D10", "D12", "D20", "D100"],
+  });
+  const [statsInitialized, setStatsInitialized] = useState<boolean>(false);
 
   useEffect(() => {
+    setStats(initializeStats(stats));
+    setStatsInitialized(true);
+  }, []);
+
+  useEffect(() => {
+    if (!statsInitialized) return;
+
     console.log(
       "Fetching state from local storage. This should only happen on first load or refresh!"
     );
@@ -33,8 +46,6 @@ export const SessionProvider: React.FC = ({ children }) => {
     if (sessionStateString && sessionStateString !== "undefined") {
       const sessionState = JSON.parse(sessionStateString);
 
-      initializeStats(sessionState);
-
       setCurrSession(sessionState);
     } else console.log("No state could be fetched.");
 
@@ -42,7 +53,7 @@ export const SessionProvider: React.FC = ({ children }) => {
 
     return unsubscribe;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [statsInitialized]);
 
   useEffect(() => {
     if (currSession) {
@@ -64,13 +75,34 @@ export const SessionProvider: React.FC = ({ children }) => {
       loadSessions.push(newData);
     });
 
+    loadSessions.sort((a, b) => (a.date < b.date ? -1 : 1));
+
+    loadSessions.forEach(data => {
+      addSessionStats(data.stats);
+    });
+
     loadSessions.sort((a, b) => (a.date < b.date ? 1 : -1));
 
     setSessions(loadSessions);
   };
 
+  const addSessionStats = (sessionStats: IStats) => {
+    let globalStats = stats;
+
+    globalStats.rolls.concat(sessionStats.rolls);
+
+    for (const die of sessionStats.usedDice) {
+      globalStats[die].rolls += sessionStats[die].rolls;
+      globalStats[die].total += sessionStats[die].total;
+      globalStats[die].history = globalStats[die].history.concat(sessionStats[die].history);
+
+      // URGENT: Fix avg calculation
+      globalStats[die].avg = globalStats[die].avg.concat(sessionStats[die].avg);
+    }
+  };
+
   const startSession = (state: ISession) => {
-    state.stats = initializeStats(state);
+    state.stats = initializeStats(state.stats);
     setCurrSession(state);
   };
 
@@ -84,9 +116,7 @@ export const SessionProvider: React.FC = ({ children }) => {
     }
   };
 
-  const initializeStats = (sessionState: ISession): IStats => {
-    let stats: IStats = { ...sessionState.stats };
-
+  const initializeStats = (stats: IStats): IStats => {
     //FUTURE: Sort this after most used.... maybe enable in settings
 
     stats.usedDice.sort((a: Dice, b: Dice) => sortDice(a, b, "desc"));
@@ -96,7 +126,7 @@ export const SessionProvider: React.FC = ({ children }) => {
         ...stats,
         [die]: {
           rolls: 0,
-          total: 0,
+          total: [],
           avg: [],
           history: [],
         },
@@ -131,6 +161,7 @@ export const SessionProvider: React.FC = ({ children }) => {
     startSession,
     endSession,
     addRoll,
+    stats,
   };
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;

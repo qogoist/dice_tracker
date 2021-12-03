@@ -42,7 +42,7 @@ const OngoingSession: React.FC = () => {
 
   if (currSession) {
     return (
-      <div className="session-grid">
+      <div className="session-grid content">
         <h1>{currSession.name}</h1>
         <Button className="btn" onClick={handleEndSession}>
           End Session
