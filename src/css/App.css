@@ -102,11 +102,11 @@ input:-internal-autofill-selected {
   transition: transform var(--t-speed) ease-in-out;
 }
 
-.modal-btn-close {
-  --btn-clr: var(--clr-gray-100);
-  --btn-clr-back: var(--clr-danger-500);
-  --btn-clr-hover: var(--clr-gray-100);
-  --btn-clr-hover-back: var(--clr-accent-600);
+.modal .modal-close {
+  --btn-clr: var(--clr-gray-900);
+  --btn-clr-hover: var(--clr-danger-500);
+
+  padding: 0;
 
   cursor: pointer;
   grid-area: close;
@@ -115,10 +115,9 @@ input:-internal-autofill-selected {
   transition: color var(--t-speed-2) ease-in-out, transform var(--t-speed-2) ease-in-out;
 }
 
-.modal-btn-close:hover,
-.modal-btn-close:focus-visible {
-  color: hsl(var(--clr-danger-600) / 0.8);
-  transform: scale(1.1);
+.modal .modal-close:hover,
+.modal .modal-close:focus-visible {
+  transform: scale(1.2);
 }
 
 .backdrop {
@@ -152,7 +151,8 @@ input:-internal-autofill-selected {
 /* ====================================== */
 
 .btn,
-.btn-outline {
+.btn-outline,
+.btn-ghost {
   --btn-clr: var(--clr-gray-100);
   --btn-clr-back: var(--clr-primary-500);
   --btn-clr-hover: var(--btn-clr-back);
@@ -181,10 +181,16 @@ input:-internal-autofill-selected {
   outline: 0.125em solid hsl(var(--btn-clr));
 }
 
+.btn-ghost {
+  background: transparent;
+}
+
 .btn:hover,
 .btn:focus-visible,
 .btn-outline:hover,
-.btn-outline:focus-visible {
+.btn-outline:focus-visible,
+.btn-ghost:hover,
+.btn-ghost:focus-visible {
   color: hsl(var(--btn-clr-hover));
 }
 

@@ -8,7 +8,7 @@ type Props = {
 
 const ModalBtnClose: React.FC<Props> = ({ onClick }) => {
   return (
-    <Button className="modal-btn-close" onClick={onClick}>
+    <Button className="modal-close btn-ghost" onClick={onClick}>
       <MdClose />
     </Button>
   );
