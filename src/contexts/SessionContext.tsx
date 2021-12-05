@@ -23,20 +23,14 @@ export const SessionProvider: React.FC = ({ children }) => {
   const { currentUser } = useAuth();
   const [currSession, setCurrSession] = useState<ISession>();
   const [sessions, setSessions] = useState<ISession[]>([]);
-  const [stats, setStats] = useState<IStats>({
-    rolls: [],
-    usedDice: ["D4", "D6", "D8", "D10", "D12", "D20", "D100"],
+  const [stats, setStats] = useState<IStats>(() => {
+    return initializeStats({
+      rolls: [],
+      usedDice: ["D4", "D6", "D8", "D10", "D12", "D20", "D100"],
+    });
   });
-  const [statsInitialized, setStatsInitialized] = useState<boolean>(false);
 
   useEffect(() => {
-    setStats(initializeStats(stats));
-    setStatsInitialized(true);
-  }, []);
-
-  useEffect(() => {
-    if (!statsInitialized) return;
-
     console.log(
       "Fetching state from local storage. This should only happen on first load or refresh!"
     );
@@ -53,7 +47,7 @@ export const SessionProvider: React.FC = ({ children }) => {
 
     return unsubscribe;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [statsInitialized]);
+  }, []);
 
   useEffect(() => {
     if (currSession) {
@@ -77,27 +71,38 @@ export const SessionProvider: React.FC = ({ children }) => {
 
     loadSessions.sort((a, b) => (a.date < b.date ? -1 : 1));
 
-    loadSessions.forEach(data => {
-      addSessionStats(data.stats);
+    let stats = initializeStats({
+      rolls: [],
+      usedDice: ["D4", "D6", "D8", "D10", "D12", "D20", "D100"],
     });
+
+    loadSessions.forEach(data => {
+      concatSessionStats(stats, data.stats);
+    });
+
+    setStats(stats);
 
     loadSessions.sort((a, b) => (a.date < b.date ? 1 : -1));
 
     setSessions(loadSessions);
   };
 
-  const addSessionStats = (sessionStats: IStats) => {
-    let globalStats = stats;
-
-    globalStats.rolls.concat(sessionStats.rolls);
+  const concatSessionStats = (globalStats: IStats, sessionStats: IStats) => {
+    globalStats.rolls = globalStats.rolls.concat(sessionStats.rolls);
 
     for (const die of sessionStats.usedDice) {
-      globalStats[die].rolls += sessionStats[die].rolls;
-      globalStats[die].total += sessionStats[die].total;
-      globalStats[die].history = globalStats[die].history.concat(sessionStats[die].history);
+      let sessionDieStats: IDieStats = sessionStats[die];
 
-      // URGENT: Fix avg calculation
-      globalStats[die].avg = globalStats[die].avg.concat(sessionStats[die].avg);
+      globalStats[die].rolls += sessionDieStats.rolls;
+      globalStats[die].history = globalStats[die].history.concat(sessionDieStats.history);
+
+      const length = globalStats[die].total.length;
+      const base = length > 0 ? globalStats[die].total.at(-1) : 0;
+
+      sessionDieStats.total.forEach((num: number, i: number) => {
+        globalStats[die].total.push(base + num);
+        globalStats[die].avg.push((base + num) / (length + i + 1));
+      });
     }
   };
 
@@ -116,7 +121,29 @@ export const SessionProvider: React.FC = ({ children }) => {
     }
   };
 
-  const initializeStats = (stats: IStats): IStats => {
+  const addRoll = (roll: IRoll) => {
+    let newState: ISession = { ...currSession! };
+
+    if (currSession) {
+      newState.stats.rolls.push(roll);
+
+      const newStats: IStats = { ...currSession.stats };
+
+      newStats[roll.die].rolls += 1;
+
+      if (newStats[roll.die].total.length == 0) newStats[roll.die].total.push(roll.result);
+      else newStats[roll.die].total.push(newStats[roll.die].total.at(-1) + roll.result);
+
+      newStats[roll.die].avg.push(newStats[roll.die].total.at(-1) / newStats[roll.die].rolls);
+      newStats[roll.die].history.push(newState.stats.rolls[newState.stats.rolls.length - 1]);
+
+      newState.stats = newStats;
+
+      setCurrSession(newState);
+    } else console.log("No session state found => Something went wrong.");
+  };
+
+  function initializeStats(stats: IStats): IStats {
     //FUTURE: Sort this after most used.... maybe enable in settings
 
     stats.usedDice.sort((a: Dice, b: Dice) => sortDice(a, b, "desc"));
@@ -134,26 +161,7 @@ export const SessionProvider: React.FC = ({ children }) => {
     }
 
     return stats;
-  };
-
-  const addRoll = (roll: IRoll) => {
-    let newState: ISession = { ...currSession! };
-
-    if (currSession) {
-      newState.stats.rolls.push(roll);
-
-      const newStats: IStats = { ...currSession.stats };
-
-      newStats[roll.die].rolls += 1;
-      newStats[roll.die].total += roll.result;
-      newStats[roll.die].avg.push(newStats[roll.die].total / newStats[roll.die].rolls);
-      newStats[roll.die].history.push(newState.stats.rolls[newState.stats.rolls.length - 1]);
-
-      newState.stats = newStats;
-
-      setCurrSession(newState);
-    } else console.log("No session state found => Something went wrong.");
-  };
+  }
 
   const value: ISessionContext = {
     currSession,

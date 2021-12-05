@@ -13,7 +13,7 @@ interface IRoll {
 
 interface IDieStats {
   rolls: number;
-  total: number;
+  total: number[];
   avg: number[];
   history: IRoll[]; //Reference to the location in the IStats.rolls array.
 }
