@@ -10,7 +10,7 @@ type Props = {
   stats: IStats;
 };
 
-const SessionStats: React.FC<Props> = ({ stats }) => {
+const DiceStatView: React.FC<Props> = ({ stats }) => {
   const [labels, setLabels] = useState<string[]>([]);
   const [datasets, setDatasets] = useState<ChartDataset<"line">[]>([]);
   const [overviewSets, setOverviewSets] = useState<ChartDataset<"doughnut">[]>([]);
@@ -96,4 +96,4 @@ const SessionStats: React.FC<Props> = ({ stats }) => {
   );
 };
 
-export default SessionStats;
+export default DiceStatView;

@@ -703,6 +703,7 @@ input:-internal-autofill-selected {
 
   .dashboard {
     width: 100%;
+    grid-template-columns: auto 1fr 1fr;
     grid-template-areas: "session-list stats stats";
   }
 

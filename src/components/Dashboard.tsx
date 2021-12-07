@@ -3,7 +3,7 @@ import { useSession } from "../contexts/SessionContext";
 
 import Card from "./Card";
 import SessionList from "./SessionList";
-import SessionStats from "./SessionStats";
+import DiceStatView from "./DiceStatView";
 
 const Dashboard: React.FC = () => {
   const { stats } = useSession();
@@ -11,7 +11,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className="dashboard content">
       <Card className="stats">
-        <SessionStats stats={stats!} />
+        <DiceStatView stats={stats!} />
       </Card>
       <SessionList />
     </div>

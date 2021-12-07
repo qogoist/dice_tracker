@@ -7,7 +7,7 @@ import Button from "./Button";
 import Card from "./Card";
 import DiceModal from "./DiceModal";
 import DynDicePicker from "./DynDicePicker";
-import SessionStats from "./SessionStats";
+import DiceStatView from "./DiceStatView";
 
 const OngoingSession: React.FC = () => {
   const { currSession, addRoll, endSession } = useSession();
@@ -48,7 +48,7 @@ const OngoingSession: React.FC = () => {
           End Session
         </Button>
         <Card className="stats">
-          <SessionStats stats={currSession.stats} />
+          <DiceStatView stats={currSession.stats} />
         </Card>
         <Card className="dice-picker">
           <DynDicePicker handleChange={handleDiceButton} dice={currSession.stats.usedDice} />
