@@ -7,6 +7,7 @@ import NewSession from "./NewSession";
 import Stats from "./Stats";
 import Settings from "./Settings";
 import OngoingSession from "./OngoingSession";
+import SessionPage from "./SessionPage";
 
 const MainContent: React.FC = () => {
   return (
@@ -15,6 +16,9 @@ const MainContent: React.FC = () => {
         <Routes>
           <Route path="/*" element={<Dashboard />} />
           <Route path="/new-session" element={<NewSession />} />
+          <Route path="/sessions/">
+            <Route path=":sessionId" element={<SessionPage />} />
+          </Route>
           <Route path="/stats" element={<Stats />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/ongoing-session" element={<OngoingSession />} />

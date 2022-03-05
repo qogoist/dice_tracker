@@ -225,7 +225,8 @@ input:-internal-autofill-selected {
 /* Generic Card Components */
 /* ====================================== */
 
-.card {
+.card,
+.card-fit {
   --card-clr-bg: var(--clr-gray-100);
   --card-clr-txt: var(--clr-gray-800);
   --card-clr-head: var(--clr-gray-900);
@@ -249,12 +250,65 @@ input:-internal-autofill-selected {
   color: hsl(var(--card-clr-head));
 }
 
+.card .full-width {
+  width: 100%;
+}
+
+.card .spaced {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-fit {
+  width: fit-content;
+  height: fit-content;
+}
+
+.card a {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  outline: 0;
+  transition: transform var(--t-speed-4) ease-in-out, color var(--t-speed-4) ease-in-out;
+}
+
+.card a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0.05em;
+  background: hsl(var(--clr-primary-500));
+  transform: scale(0, 1);
+  transform-origin: right;
+  transition: transform var(--t-speed-4) ease-in-out;
+}
+
+.card a:hover,
+.card a:focus-visible {
+  transform: scale(1.1);
+  color: hsl(var(--clr-primary-500));
+}
+
+.card a:hover::after,
+.card a:focus-visible::after {
+  transform: scale(1, 1);
+  transform-origin: left;
+}
+
+.card a:active {
+  transform: scale(0.95);
+}
+
 /* ====================================== */
 /* Generic Chart Components */
 /* ====================================== */
 
 .chart {
   position: relative;
+  max-height: 100%;
+  max-width: 100%;
   height: 100%;
   width: 100%;
   display: grid;
@@ -440,6 +494,19 @@ input:-internal-autofill-selected {
   background: hsl(var(--btn-clr-hover-back));
 }
 
+.session-stats-grid {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:
+    "...title ..."
+    "stats stats stats";
+
+  text-align: center;
+}
+
 .session-grid {
   height: 100%;
   display: grid;
@@ -452,7 +519,8 @@ input:-internal-autofill-selected {
     "dice dice dice";
 }
 
-.session-grid > h1 {
+.session-grid > h1,
+.session-stats-grid > h1 {
   grid-area: title;
   color: hsl(var(--clr-primary-100));
   text-shadow: 0rem 0.5rem 0.75rem hsl(var(--clr-gray-900) / 0.5);
@@ -464,12 +532,14 @@ input:-internal-autofill-selected {
   box-shadow: 0em 0.5em 1em 0em hsl(var(--clr-gray-900) / 0.5);
 }
 
-.session-grid > .card {
+.session-grid > .card,
+.session-stats-grid > .card {
   width: 100%;
   height: fit-content;
 }
 
-.session-grid > .stats {
+.session-grid > .stats,
+.session-stats-grid > .stats {
   grid-area: stats;
   min-height: 250px;
   height: 100%;
@@ -562,6 +632,7 @@ input:-internal-autofill-selected {
 .dashboard {
   display: grid;
   gap: 1rem;
+  grid-template-rows: min-content auto;
   grid-template-areas:
     "stats"
     "session-list";
@@ -569,10 +640,14 @@ input:-internal-autofill-selected {
 
 .dashboard > .stats {
   grid-area: stats;
+  overflow: hidden;
 }
 
 .dashboard > .session-list {
   grid-area: session-list;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
 }
 
 /* ====================================== */
@@ -685,6 +760,10 @@ input:-internal-autofill-selected {
   margin: auto 0;
 }
 
+.logo:visited {
+  color: hsl(var(--clr-gray-100));
+}
+
 /* ====================================== */
 /* Media Queries for Desktop Version */
 /* ====================================== */
@@ -703,8 +782,9 @@ input:-internal-autofill-selected {
 
   .dashboard {
     width: 100%;
-    grid-template-columns: auto 1fr 1fr;
-    grid-template-areas: "session-list stats stats";
+    grid-template-columns: 1fr 3.5fr;
+    grid-template-rows: 100%;
+    grid-template-areas: "session-list stats";
   }
 
   .session-grid {

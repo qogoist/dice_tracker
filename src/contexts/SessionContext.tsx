@@ -11,6 +11,7 @@ export type ISessionContext = {
   endSession: () => void;
   addRoll: (roll: IRoll) => void;
   stats: IStats;
+  getSession: ((id: string) => ISession | null) | null;
 };
 
 export const SessionContext = createContext<Partial<ISessionContext>>({});
@@ -163,6 +164,27 @@ export const SessionProvider: React.FC = ({ children }) => {
     return stats;
   }
 
+  let getSession = null;
+
+  if (sessions.length > 0) {
+    getSession = (id: string): ISession | null => {
+      let value = null;
+
+      console.log("Fetching Session: " + id);
+      console.log(sessions);
+
+      sessions.forEach(session => {
+        if (session._id === id) {
+          value = session;
+        }
+      });
+
+      console.log(value);
+
+      return value;
+    };
+  }
+
   const value: ISessionContext = {
     currSession,
     sessions,
@@ -170,6 +192,7 @@ export const SessionProvider: React.FC = ({ children }) => {
     endSession,
     addRoll,
     stats,
+    getSession,
   };
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
