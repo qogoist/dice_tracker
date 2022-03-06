@@ -24,7 +24,7 @@
 
 #root {
   overflow: hidden;
-  height: 100vh;
+  height: 100%;
   display: grid;
   grid-template-rows: 5rem auto 3.5rem;
   grid-template-areas:
@@ -230,6 +230,7 @@ input:-internal-autofill-selected {
   --card-clr-bg: var(--clr-gray-100);
   --card-clr-txt: var(--clr-gray-800);
   --card-clr-head: var(--clr-gray-900);
+  position: relative;
   display: flex;
   gap: 1rem;
   flex-direction: column;
@@ -637,6 +638,7 @@ input:-internal-autofill-selected {
   gap: 1rem;
   grid-template-rows: min-content auto;
   grid-template-areas:
+    "current"
     "stats"
     "session-list";
 }
@@ -651,7 +653,36 @@ input:-internal-autofill-selected {
   display: flex;
   align-items: center;
   flex-direction: column;
-  gap: 1em;
+  gap: 1rem;
+  padding-bottom: 1rem;
+}
+
+.dashboard > .current-session {
+  background: hsl(var(--clr-primary-200) / 0.7);
+}
+
+.session-preview {
+  width: 100%;
+  transition: transform var(--t-speed-4) ease-out;
+}
+
+.session-preview:hover,
+.session-preview:focus-within {
+  transform: scale(1.05);
+}
+
+.session-preview::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--br);
+  opacity: 0;
+  box-shadow: 0.25rem 1.5rem 1.5rem -0.25rem hsla(var(--clr-gray-900) / 0.3);
+  transition: opacity var(--t-speed-4) ease-out;
+}
+
+.session-preview:hover::after {
+  opacity: 1;
 }
 
 .floating-text {
@@ -873,8 +904,10 @@ input:-internal-autofill-selected {
   .dashboard {
     width: 100%;
     grid-template-columns: 1fr 3.5fr;
-    grid-template-rows: 100%;
-    grid-template-areas: "session-list stats";
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "current stats"
+      "session-list stats";
   }
 
   .session-grid {

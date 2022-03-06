@@ -15,8 +15,4 @@ const Navbar: React.FC = () => {
   );
 };
 
-//TODO: Add Navigation back to running session
-//TODO: Resume previously ended session
-//TODO: Delete sessions
-
 export default Navbar;
