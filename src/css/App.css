@@ -241,6 +241,10 @@ input:-internal-autofill-selected {
   box-shadow: 0rem 0.5rem 1rem 0rem hsla(var(--clr-gray-900) / 0.5);
 }
 
+.card.full-width {
+  width: 100%;
+}
+
 .card h1 {
   color: hsl(var(--card-clr-head));
   text-align: center;
@@ -248,10 +252,6 @@ input:-internal-autofill-selected {
 
 .card h2 {
   color: hsl(var(--card-clr-head));
-}
-
-.card .full-width {
-  width: 100%;
 }
 
 .card .spaced {

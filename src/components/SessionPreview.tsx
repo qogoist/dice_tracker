@@ -8,11 +8,9 @@ type Props = {
   session: ISession;
 };
 
-const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
-
 const SessionPreview: React.FC<Props> = ({ session }) => {
   return (
-    <Card>
+    <Card className="full-width">
       <h1>
         <Link to={"/sessions/" + session._id}>{session.name}</Link>
       </h1>
