@@ -3,7 +3,7 @@ import DiceButton from "./DiceButton";
 
 type Props = {
   dice: (Dice | "Overview")[];
-  active: Dice | "Overview";
+  active?: Dice | "Overview";
   handleChange: (e: React.FormEvent<HTMLButtonElement>) => void;
 };
 

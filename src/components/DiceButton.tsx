@@ -4,7 +4,7 @@ import Button from "./Button";
 
 type Props = {
   label: string;
-  active: boolean;
+  active?: boolean;
   handleChange: (e: React.FormEvent<HTMLButtonElement>) => void;
 };
 
