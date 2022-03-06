@@ -77,8 +77,6 @@ const DiceStatView: React.FC<Props> = ({ stats }) => {
     setActiveChart(button);
   };
 
-  //TODO: Implement Active States on Graph selector.
-
   return (
     <>
       <StatSelector
@@ -91,7 +89,11 @@ const DiceStatView: React.FC<Props> = ({ stats }) => {
       ) : (
         <LineGraph die={activeChart} labels={labels} datasets={datasets} />
       )}
-      <DynDicePicker dice={["Overview", ...stats.usedDice]} handleChange={handleClick} />
+      <DynDicePicker
+        dice={["Overview", ...stats.usedDice]}
+        active={activeChart}
+        handleChange={handleClick}
+      />
     </>
   );
 };

@@ -490,7 +490,8 @@ input:-internal-autofill-selected {
   visibility: hidden;
 }
 
-.dice-box-check:checked ~ .dice-box-label {
+.dice-box-check:checked ~ .dice-box-label,
+.dice-btn.active {
   color: hsl(var(--btn-clr-hover));
   background: hsl(var(--btn-clr-hover-back));
 }

@@ -4,12 +4,17 @@ import Button from "./Button";
 
 type Props = {
   label: string;
+  active: boolean;
   handleChange: (e: React.FormEvent<HTMLButtonElement>) => void;
 };
 
-const DiceButton: React.FC<Props> = ({ label, handleChange }) => {
+const DiceButton: React.FC<Props> = ({ label, active, handleChange }) => {
   return (
-    <Button className="dice-btn btn" onClick={handleChange} value={label}>
+    <Button
+      className={`btn dice-btn ${active ? "active" : ""}`}
+      onClick={handleChange}
+      value={label}
+    >
       {label}
     </Button>
   );
