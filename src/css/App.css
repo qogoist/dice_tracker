@@ -289,7 +289,7 @@ input:-internal-autofill-selected {
 
 .card a:hover,
 .card a:focus-visible {
-  transform: scale(1.1);
+  transform: scale(1.05);
   color: hsl(var(--clr-primary-500));
 }
 
@@ -671,7 +671,7 @@ input:-internal-autofill-selected {
   transform: scale(1.05);
 }
 
-.session-preview::after {
+.session-preview::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -681,7 +681,7 @@ input:-internal-autofill-selected {
   transition: opacity var(--t-speed-4) ease-out;
 }
 
-.session-preview:hover::after {
+.session-preview:hover::before {
   opacity: 1;
 }
 
@@ -716,7 +716,7 @@ input:-internal-autofill-selected {
 
 .floating-text a:hover,
 .floating-text a:focus-visible {
-  transform: scale(1.1);
+  transform: scale(1.025);
 }
 
 .floating-text a:hover::after,
