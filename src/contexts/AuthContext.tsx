@@ -17,8 +17,6 @@ export const AuthProvider: React.FC = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  //TODO: Error Handling => https://firebase.google.com/docs/auth/admin/errors
-
   const signup = (email: string, pass: string): Promise<any> => {
     return createUserWithEmailAndPassword(auth, email, pass);
   };

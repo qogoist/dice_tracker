@@ -355,7 +355,8 @@ input:-internal-autofill-selected {
   margin: 0.5em 0;
 }
 
-.auth-box a {
+.auth-box a,
+.auth-box a:visited {
   position: relative;
   display: inline-block;
   text-decoration: none;
@@ -696,6 +697,11 @@ input:-internal-autofill-selected {
 .alert-box.error {
   --box-clr: var(--clr-danger-700);
   --box-clr-back: var(--clr-danger-200);
+}
+
+.alert-box.success {
+  --box-clr: var(--clr-success-800);
+  --box-clr-back: var(--clr-success-100);
 }
 
 /* ====================================== */
