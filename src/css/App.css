@@ -659,7 +659,6 @@ input:-internal-autofill-selected {
   --box-clr-back: var(--clr-primary-200);
 
   position: relative;
-  max-height: 3em;
   width: 100%;
   padding: 1em 1em;
   margin-bottom: 1em;

@@ -5,6 +5,7 @@ import AlertBox from "../components/AlertBox";
 import AuthBackdrop from "../components/AuthBackdrop";
 import FormLabel from "../components/FormLabel";
 import { useAuth } from "../contexts/AuthContext";
+import { mapAuthErrorMessage } from "../helper/AuthErrorMessage";
 
 type EmailSignupData = {
   email?: string;
@@ -34,7 +35,7 @@ const Signup: React.FC = () => {
       navigate("/");
     } catch (error: any) {
       console.error(error.message);
-      setError(error.message);
+      setError(mapAuthErrorMessage(error.code));
       setIsLoading(false);
     }
   };
