@@ -24,7 +24,7 @@
 
 #root {
   overflow: hidden;
-  height: 100vh;
+  height: 100%;
   display: grid;
   grid-template-rows: 5rem auto 3.5rem;
   grid-template-areas:
@@ -651,7 +651,8 @@ input:-internal-autofill-selected {
   display: flex;
   align-items: center;
   flex-direction: column;
-  gap: 1em;
+  gap: 1rem;
+  padding-bottom: 1rem;
 }
 
 .floating-text {
