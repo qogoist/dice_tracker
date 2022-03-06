@@ -255,6 +255,7 @@ input:-internal-autofill-selected {
 }
 
 .card .spaced {
+  width: 100%;
   display: flex;
   justify-content: space-between;
 }
