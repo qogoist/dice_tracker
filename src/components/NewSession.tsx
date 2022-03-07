@@ -1,19 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 import DicePicker from "./DicePicker";
 import FormLabel from "./FormLabel";
 
 import { useSession } from "../contexts/SessionContext";
 import { getLocalISOString } from "../helper/date";
-import Button from "./Button";
 import AlertBox from "./AlertBox";
 
 const NewSession: React.FC = () => {
   const [data, setData] = useState<ISession>({
     name: "",
     game: "",
-    date: getLocalISOString().substr(0, 16),
+    date: getLocalISOString().substring(0, 16),
     stats: {
       rolls: [],
       usedDice: [],
@@ -21,8 +20,13 @@ const NewSession: React.FC = () => {
   });
   const [err, setErr] = useState<boolean>(false);
   const navigate = useNavigate();
-  const { startSession } = useSession();
+  const { startSession, endSession } = useSession();
   const formRef = useRef<HTMLFormElement>(null);
+  const { state } = useLocation();
+
+  useEffect(() => {
+    if (state) setData(state);
+  }, [state]);
 
   useEffect(() => {
     if (data.stats.usedDice.length > 0) setErr(false);
@@ -34,6 +38,12 @@ const NewSession: React.FC = () => {
     if (data.stats.usedDice.length < 1) {
       setErr(true);
       console.log("No dice selected");
+      return;
+    }
+
+    if (state) {
+      endSession?.(data); //TODO: On edit of ongoing session this should not end :)
+      navigate(-1);
       return;
     }
 
@@ -58,9 +68,14 @@ const NewSession: React.FC = () => {
   const handleDice = (die: Dice, checked: boolean) => {
     const dice = { ...data.stats };
 
-    if (checked) dice.usedDice.push(die);
-    else if (dice.usedDice.includes(die)) dice.usedDice.splice(dice.usedDice.indexOf(die), 1);
+    console.log("Handling ", die, checked);
+    console.log(dice.usedDice);
 
+    if (checked && !dice.usedDice.includes(die)) dice.usedDice.push(die);
+    else if (!checked && dice.usedDice.includes(die))
+      dice.usedDice.splice(dice.usedDice.indexOf(die), 1);
+
+    console.log(dice.usedDice);
     setData({
       ...data,
       stats: dice,
@@ -78,6 +93,7 @@ const NewSession: React.FC = () => {
             type="text"
             handleChange={handleChange}
             isRequired={true}
+            value={data.name}
           />
           <FormLabel
             description="Game"
@@ -85,6 +101,7 @@ const NewSession: React.FC = () => {
             type="text"
             handleChange={handleChange}
             isRequired={true}
+            value={data.game}
           />
           <FormLabel
             description="Date"
@@ -95,15 +112,16 @@ const NewSession: React.FC = () => {
           />
           <h2>Choose Dice:</h2>
           <AlertBox type="error" active={err} message="Please select at least one type of die." />
-          <DicePicker handleChange={handleDice} />
-          <Button
-            className="btn new-session-btn"
-            onClick={() => {
-              formRef.current?.requestSubmit();
-            }}
-          >
-            Start Session
-          </Button>
+          <DicePicker handleChange={handleDice} checkedDice={data.stats.usedDice} />
+          {state ? (
+            <button type="submit" className="btn new-session-btn">
+              Save Info
+            </button>
+          ) : (
+            <button type="submit" className="btn new-session-btn">
+              Start Session
+            </button>
+          )}
         </form>
       </div>
     </div>

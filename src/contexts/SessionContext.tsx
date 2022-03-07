@@ -9,9 +9,9 @@ export type ISessionContext = {
   setCurrSession: (session: ISession | undefined) => void;
   sessions: ISession[];
   startSession: (state: ISession) => void;
-  endSession: () => void;
+  endSession: (session: ISession) => void;
   removeSession: (id: string) => Promise<void>;
-  addRoll: (roll: IRoll) => void;
+  addRoll: (roll: IRoll, session: ISession) => ISession;
   stats: IStats;
   getSession: ((id: string) => ISession | undefined) | null;
 };
@@ -114,10 +114,11 @@ export const SessionProvider: React.FC = ({ children }) => {
     setCurrSession(state);
   };
 
-  const endSession = () => {
+  const endSession = (session: ISession) => {
     try {
-      if (currSession?._id) updateSession(currentUser, currSession);
+      if (session._id) updateSession(currentUser, session);
       else addSession(currentUser, currSession);
+
       setCurrSession(undefined);
       localStorage.removeItem("currentSession");
     } catch (error: any) {
@@ -133,26 +134,24 @@ export const SessionProvider: React.FC = ({ children }) => {
     }
   };
 
-  const addRoll = (roll: IRoll) => {
-    let newState: ISession = { ...currSession! };
+  const addRoll = (roll: IRoll, session: ISession): ISession => {
+    let newState: ISession = { ...session! };
 
-    if (currSession) {
-      newState.stats.rolls.push(roll);
+    newState.stats.rolls.push(roll);
 
-      const newStats: IStats = { ...currSession.stats };
+    const newStats: IStats = { ...session.stats };
 
-      newStats[roll.die].rolls += 1;
+    newStats[roll.die].rolls += 1;
 
-      if (newStats[roll.die].total.length == 0) newStats[roll.die].total.push(roll.result);
-      else newStats[roll.die].total.push(newStats[roll.die].total.at(-1) + roll.result);
+    if (newStats[roll.die].total.length == 0) newStats[roll.die].total.push(roll.result);
+    else newStats[roll.die].total.push(newStats[roll.die].total.at(-1) + roll.result);
 
-      newStats[roll.die].avg.push(newStats[roll.die].total.at(-1) / newStats[roll.die].rolls);
-      newStats[roll.die].history.push(newState.stats.rolls[newState.stats.rolls.length - 1]);
+    newStats[roll.die].avg.push(newStats[roll.die].total.at(-1) / newStats[roll.die].rolls);
+    newStats[roll.die].history.push(newState.stats.rolls[newState.stats.rolls.length - 1]);
 
-      newState.stats = newStats;
+    newState.stats = newStats;
 
-      setCurrSession(newState);
-    } else console.log("No session state found => Something went wrong.");
+    return newState;
   };
 
   function initializeStats(stats: IStats): IStats {

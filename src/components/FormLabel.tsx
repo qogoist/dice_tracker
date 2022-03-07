@@ -7,6 +7,7 @@ type Props = {
   placeholder?: string;
   autocomplete?: "new-password" | "current-password" | "username" | string;
   value?: string;
+  defaultValue?: string;
   isRequired?: boolean;
   handleChange: (e: React.FormEvent<HTMLInputElement>) => void;
 };
@@ -18,6 +19,7 @@ const FormLabel: React.FC<Props> = ({
   placeholder,
   autocomplete,
   value,
+  defaultValue,
   isRequired,
   handleChange,
 }) => {
@@ -30,6 +32,7 @@ const FormLabel: React.FC<Props> = ({
         placeholder={placeholder ? placeholder : " "}
         autoComplete={autocomplete ? autocomplete : "on"}
         value={value}
+        defaultValue={defaultValue}
         required={isRequired}
       />
       <label>{description}</label>

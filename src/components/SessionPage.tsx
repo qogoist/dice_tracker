@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { MdDelete, MdOutlineReplay } from "react-icons/md";
+import { MdDelete, MdEdit, MdOutlineReplay } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSession } from "../contexts/SessionContext";
 
 import Card from "./Card";
 import DeleteModal from "./DeleteModal";
 import DiceStatView from "./DiceStatView";
-import ResumeModal from "./ResumeModal";
 
 const SessionPage: React.FC = () => {
   const [session, setSession] = useState<ISession | undefined>();
   const [deleteModal, setDeleteModal] = useState(false);
-  const [resumeModal, setResumeModal] = useState(false);
 
   const { sessionId } = useParams();
-  const { currSession, setCurrSession, getSession, removeSession } = useSession();
+  const { getSession, removeSession } = useSession();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,17 +33,11 @@ const SessionPage: React.FC = () => {
   };
 
   const handleResume = () => {
-    if (currSession) {
-      setResumeModal(true);
-      return;
-    }
-
-    confirmResume();
+    navigate("/continue-session", { state: session });
   };
 
-  const confirmResume = async () => {
-    setCurrSession?.(session);
-    navigate("/ongoing-session");
+  const handleEdit = () => {
+    navigate("/edit-session", { state: session });
   };
 
   if (getSession === null) {
@@ -65,7 +57,18 @@ const SessionPage: React.FC = () => {
           <DiceStatView stats={session.stats} />
         </Card>
         <div className="buttons">
-          <button className="btn btn-neutral icon" title="Resume Session" onClick={handleResume}>
+          <button
+            className="btn btn-neutral icon"
+            title="Edit Session Information"
+            onClick={handleEdit}
+          >
+            <MdEdit />
+          </button>
+          <button
+            className="btn btn-neutral icon"
+            title="Resume Session (Add Rolls)"
+            onClick={handleResume}
+          >
             <MdOutlineReplay />
           </button>
           <button
@@ -81,11 +84,6 @@ const SessionPage: React.FC = () => {
           show={deleteModal}
           onClose={() => setDeleteModal(false)}
           onDelete={handleDelete}
-        />
-        <ResumeModal
-          show={resumeModal}
-          onClose={() => setResumeModal(false)}
-          onResume={confirmResume}
         />
       </div>
     );

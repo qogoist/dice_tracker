@@ -2,11 +2,16 @@ import React, { useEffect, useState } from "react";
 
 type Props = {
   die: Dice;
+  check?: boolean;
   handleChange: (die: Dice, checked: boolean) => void;
 };
 
-const DiceCheckbox: React.FC<Props> = ({ die, handleChange }) => {
+const DiceCheckbox: React.FC<Props> = ({ die, check, handleChange }) => {
   const [checked, setChecked] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (check) setChecked(true);
+  }, [check]);
 
   useEffect(() => {
     handleChange(die, checked);

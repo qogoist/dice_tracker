@@ -580,10 +580,12 @@ input:-internal-autofill-selected {
   text-shadow: 0rem 0.5rem 0.75rem hsl(var(--clr-gray-900) / 0.5);
 }
 
-.session-grid > button {
+.session-grid > .buttons {
   grid-area: end-btn;
-  justify-self: end;
-  box-shadow: 0em 0.5em 1em 0em hsl(var(--clr-gray-900) / 0.5);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .session-grid > .card,
@@ -628,7 +630,7 @@ input:-internal-autofill-selected {
   grid-area: dice;
 }
 
-.session-grid .dice-btn,
+.session-grid .dice-picker .dice-btn,
 .dice-modal .dice-btn {
   --btn-clr: var(--clr-gray-100);
   --btn-clr-back: var(--clr-primary-500);
