@@ -65,10 +65,14 @@ const SessionPage: React.FC = () => {
           <DiceStatView stats={session.stats} />
         </Card>
         <div className="buttons">
-          <button className="btn btn-neutral icon" onClick={handleResume}>
+          <button className="btn btn-neutral icon" title="Resume Session" onClick={handleResume}>
             <MdOutlineReplay />
           </button>
-          <button className="btn btn-danger icon" onClick={() => setDeleteModal(true)}>
+          <button
+            className="btn btn-danger icon"
+            title="Delete Session"
+            onClick={() => setDeleteModal(true)}
+          >
             <MdDelete />
           </button>
         </div>
