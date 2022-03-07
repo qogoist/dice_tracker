@@ -39,7 +39,7 @@ const NewSession: React.FC = () => {
 
     try {
       startSession?.(data);
-      navigate("../ongoing-session");
+      navigate("/ongoing-session");
     } catch (error: any) {
       console.log(error);
     }

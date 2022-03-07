@@ -1,17 +1,19 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { QuerySnapshot } from "@firebase/firestore";
-import { addSession, getAllSessions } from "../api/session";
+import { addSession, deleteSession, getAllSessions, updateSession } from "../api/session";
 import { sortDice } from "../helper/sortDice";
 import { useAuth } from "./AuthContext";
 
 export type ISessionContext = {
   currSession: ISession | undefined;
+  setCurrSession: (session: ISession | undefined) => void;
   sessions: ISession[];
   startSession: (state: ISession) => void;
   endSession: () => void;
+  removeSession: (id: string) => Promise<void>;
   addRoll: (roll: IRoll) => void;
   stats: IStats;
-  getSession: ((id: string) => ISession | null) | null;
+  getSession: ((id: string) => ISession | undefined) | null;
 };
 
 export const SessionContext = createContext<Partial<ISessionContext>>({});
@@ -114,9 +116,18 @@ export const SessionProvider: React.FC = ({ children }) => {
 
   const endSession = () => {
     try {
-      addSession(currentUser, currSession);
+      if (currSession?._id) updateSession(currentUser, currSession);
+      else addSession(currentUser, currSession);
       setCurrSession(undefined);
       localStorage.removeItem("currentSession");
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+
+  const removeSession = async (id: string) => {
+    try {
+      await deleteSession(currentUser, id);
     } catch (error: any) {
       console.log(error);
     }
@@ -167,8 +178,8 @@ export const SessionProvider: React.FC = ({ children }) => {
   let getSession = null;
 
   if (sessions.length > 0) {
-    getSession = (id: string): ISession | null => {
-      let value = null;
+    getSession = (id: string): ISession | undefined => {
+      let value = undefined;
 
       console.log("Fetching Session: " + id);
       console.log(sessions);
@@ -187,9 +198,11 @@ export const SessionProvider: React.FC = ({ children }) => {
 
   const value: ISessionContext = {
     currSession,
+    setCurrSession,
     sessions,
     startSession,
     endSession,
+    removeSession,
     addRoll,
     stats,
     getSession,

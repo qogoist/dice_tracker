@@ -4,14 +4,14 @@ import { FocusOn } from "react-focus-on";
 type Props = {
   className?: string;
   enabled: boolean;
-  onClose: (...args: any[]) => void;
+  onClose?: (...args: any[]) => void;
 };
 
 const Modal: React.FC<Props> = ({ children, className, enabled, onClose }) => {
   return (
-    <FocusOn className="modal" enabled={enabled} onEscapeKey={onClose}>
+    <FocusOn className="modal-focus" enabled={enabled} onEscapeKey={onClose}>
       <div
-        className={"card" + (className ? ` ${className}` : "")}
+        className={"card modal" + (className ? ` ${className}` : "")}
         onClick={e => e.stopPropagation()}
       >
         {children}

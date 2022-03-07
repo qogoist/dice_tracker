@@ -35,7 +35,6 @@ const OngoingSession: React.FC = () => {
   };
 
   const handleEndSession = () => {
-    console.log("Ending Session");
     endSession?.();
     navigate("..");
   };
