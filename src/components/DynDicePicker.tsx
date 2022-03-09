@@ -6,7 +6,7 @@ type Props = {
   dice: (Dice | "Overview")[];
   active?: Dice | "Overview";
   sort?: SortMethods;
-  handleChange: (e: React.FormEvent<HTMLButtonElement>) => void;
+  handleChange: (e: React.FormEvent<HTMLButtonElement>) => any;
 };
 
 const DynDicePicker: React.FC<Props> = ({ dice, active, sort, handleChange }) => {

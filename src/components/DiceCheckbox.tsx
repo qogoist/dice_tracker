@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 type Props = {
   die: Dice;
   check?: boolean;
-  handleChange: (die: Dice, checked: boolean) => boolean;
+  handleChange: (die: Dice, checked: boolean) => any;
 };
 
 const DiceCheckbox: React.FC<Props> = ({ die, check, handleChange }) => {

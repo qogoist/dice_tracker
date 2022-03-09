@@ -2,7 +2,7 @@ import React from "react";
 import DiceCheckbox from "./DiceCheckbox";
 
 type Props = {
-  handleChange: (die: Dice, checked: boolean) => void;
+  handleChange: (die: Dice, checked: boolean) => any;
   checkedDice?: Dice[];
 };
 
