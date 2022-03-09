@@ -2,17 +2,21 @@ import React, { useEffect, useState } from "react";
 
 type Props = {
   die: Dice;
-  handleChange: (die: Dice, checked: boolean) => void;
+  check?: boolean;
+  handleChange: (die: Dice, checked: boolean) => any;
 };
 
-const DiceCheckbox: React.FC<Props> = ({ die, handleChange }) => {
+const DiceCheckbox: React.FC<Props> = ({ die, check, handleChange }) => {
   const [checked, setChecked] = useState<boolean>(false);
 
   useEffect(() => {
-    handleChange(die, checked);
+    if (check) setChecked(true);
+  }, [check]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [die, checked]);
+  const onCheck = async () => {
+    const success = await handleChange(die, !checked);
+    if (success) setChecked(!checked);
+  };
 
   return (
     <div className="grid-item">
@@ -22,7 +26,7 @@ const DiceCheckbox: React.FC<Props> = ({ die, handleChange }) => {
         name={die}
         id={die}
         checked={checked}
-        onClick={() => setChecked(!checked)}
+        onClick={onCheck}
         readOnly={true}
       />
       <label

@@ -1,7 +1,7 @@
 import React from "react";
 
 type Props = {
-  onClick: (...args: any[]) => void;
+  onClick?: (...args: any[]) => void;
   onKeyPress?: () => void;
   className?: string;
   value?: string;

@@ -1,4 +1,7 @@
-export const sortDice = (a: Dice, b: Dice, type: "asc" | "desc") => {
+export const sortDice = (a: Dice | "Overview", b: Dice | "Overview", type: SortMethods) => {
+  if (a === "Overview") return -1;
+  if (b === "Overview") return 1;
+
   const numA: number = parseInt(a.substring(1));
   const numB: number = parseInt(b.substring(1));
 

@@ -93,13 +93,16 @@ input:-internal-autofill-selected {
 /* Generic Modal Components */
 /* ====================================== */
 
-.modal {
-  width: 100%;
-  height: 100%;
+.modal-focus > .modal {
   display: grid;
-  place-items: center;
-  transform: translateY(-50%);
-  transition: transform var(--t-speed) ease-in-out;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "title title close"
+    "content content content";
+
+  width: clamp(20%, 400px, calc(100% - 3rem));
+  max-height: 500px;
+  background: hsl(var(--clr-gray-100) / 0.75);
 }
 
 .modal .modal-close {
@@ -120,6 +123,28 @@ input:-internal-autofill-selected {
   transform: scale(1.2);
 }
 
+.modal .modal-content {
+  grid-area: content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.modal > h1 {
+  grid-area: title;
+  place-self: start start;
+}
+
+.modal-focus {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  transform: translateY(-50%);
+  transition: transform var(--t-speed) ease-in-out;
+}
+
 .backdrop {
   position: absolute;
   top: 0;
@@ -137,7 +162,7 @@ input:-internal-autofill-selected {
   opacity: 1;
 }
 
-.backdrop.active > .modal {
+.backdrop.active > .modal-focus {
   transform: translateY(0);
 }
 
@@ -174,6 +199,7 @@ input:-internal-autofill-selected {
   text-decoration: none;
   line-height: inherit;
   cursor: pointer;
+  box-shadow: 0em 0.3em 0.4em -0.1em hsl(var(--clr-gray-900) / 0.4);
   transition: color var(--t-speed-2) linear, transform var(--t-speed-8) ease-in-out;
 }
 
@@ -183,6 +209,17 @@ input:-internal-autofill-selected {
 
 .btn-ghost {
   background: transparent;
+  box-shadow: none;
+}
+
+.btn-danger {
+  --btn-clr: var(--clr-gray-100);
+  --btn-clr-back: var(--clr-danger-500);
+}
+
+.btn-neutral {
+  --btn-clr: var(--clr-primary-500);
+  --btn-clr-back: var(--clr-gray-200);
 }
 
 .btn:hover,
@@ -219,6 +256,13 @@ input:-internal-autofill-selected {
 .btn:active,
 .btn-outline:active {
   transform: scale(0.95);
+}
+
+.btn.icon {
+  display: grid;
+  place-items: center;
+  padding: 0.25em 1em;
+  font-size: 1.25rem;
 }
 
 /* ====================================== */
@@ -503,12 +547,18 @@ input:-internal-autofill-selected {
   width: 100%;
   display: grid;
   gap: 1rem;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   grid-template-areas:
-    "...title ..."
-    "stats stats stats";
+    "title buttons"
+    "stats stats";
+}
 
-  text-align: center;
+.session-stats-grid > .buttons {
+  grid-area: buttons;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .session-grid {
@@ -530,10 +580,12 @@ input:-internal-autofill-selected {
   text-shadow: 0rem 0.5rem 0.75rem hsl(var(--clr-gray-900) / 0.5);
 }
 
-.session-grid > button {
+.session-grid > .buttons {
   grid-area: end-btn;
-  justify-self: end;
-  box-shadow: 0em 0.5em 1em 0em hsl(var(--clr-gray-900) / 0.5);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .session-grid > .card,
@@ -578,7 +630,7 @@ input:-internal-autofill-selected {
   grid-area: dice;
 }
 
-.session-grid .dice-btn,
+.session-grid .dice-picker .dice-btn,
 .dice-modal .dice-btn {
   --btn-clr: var(--clr-gray-100);
   --btn-clr-back: var(--clr-primary-500);
@@ -586,24 +638,8 @@ input:-internal-autofill-selected {
   --btn-clr-hover-back: var(--clr-accent-600);
 }
 
-.dice-modal {
-  width: clamp(20%, 400px, calc(100% - 3rem));
-  max-height: 500px;
-  background: hsl(var(--clr-gray-100) / 0.75);
-  display: grid;
-  grid-template-rows: auto 1fr;
-  grid-template-areas:
-    "title ... close"
-    "numbers numbers numbers";
-}
-
-.dice-modal > h1 {
-  grid-area: title;
-  place-self: start start;
-}
-
 .dice-modal > .dice-grid {
-  grid-area: numbers;
+  grid-area: content;
   place-self: center center;
   overflow: auto;
   max-height: 100%;
@@ -918,6 +954,13 @@ input:-internal-autofill-selected {
       "... title title end-btn ..."
       "... dice stats stats ..."
       "... dice stats stats ...";
+  }
+
+  .session-stats-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-areas:
+      "title title buttons"
+      "stats stats stats";
   }
 
   .stats > .dice-grid {

@@ -1,17 +1,19 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { QuerySnapshot } from "@firebase/firestore";
-import { addSession, getAllSessions } from "../api/session";
+import { addSession, deleteSession, getAllSessions, updateSession } from "../api/session";
 import { sortDice } from "../helper/sortDice";
 import { useAuth } from "./AuthContext";
 
 export type ISessionContext = {
   currSession: ISession | undefined;
+  setCurrSession: (session: ISession | undefined) => void;
   sessions: ISession[];
   startSession: (state: ISession) => void;
-  endSession: () => void;
-  addRoll: (roll: IRoll) => void;
+  endSession: (session: ISession) => void;
+  removeSession: (id: string) => Promise<void>;
+  addRoll: (roll: IRoll, session: ISession) => ISession;
   stats: IStats;
-  getSession: ((id: string) => ISession | null) | null;
+  getSession: ((id: string) => ISession | undefined) | null;
 };
 
 export const SessionContext = createContext<Partial<ISessionContext>>({});
@@ -20,6 +22,8 @@ export const useSession = () => {
   return useContext(SessionContext);
 };
 
+const allDice: Dice[] = ["D4", "D6", "D8", "D10", "D12", "D20", "D100"];
+
 export const SessionProvider: React.FC = ({ children }) => {
   const { currentUser } = useAuth();
   const [currSession, setCurrSession] = useState<ISession>();
@@ -27,7 +31,8 @@ export const SessionProvider: React.FC = ({ children }) => {
   const [stats, setStats] = useState<IStats>(() => {
     return initializeStats({
       rolls: [],
-      usedDice: ["D4", "D6", "D8", "D10", "D12", "D20", "D100"],
+      usedDice: allDice,
+      sort: "desc",
     });
   });
 
@@ -74,7 +79,7 @@ export const SessionProvider: React.FC = ({ children }) => {
 
     let stats = initializeStats({
       rolls: [],
-      usedDice: ["D4", "D6", "D8", "D10", "D12", "D20", "D100"],
+      usedDice: allDice,
     });
 
     loadSessions.forEach(data => {
@@ -108,13 +113,15 @@ export const SessionProvider: React.FC = ({ children }) => {
   };
 
   const startSession = (state: ISession) => {
-    state.stats = initializeStats(state.stats);
+    // state.stats = initializeStats(state.stats);
     setCurrSession(state);
   };
 
-  const endSession = () => {
+  const endSession = (session: ISession) => {
     try {
-      addSession(currentUser, currSession);
+      if (session._id) updateSession(currentUser, session);
+      else addSession(currentUser, currSession);
+
       setCurrSession(undefined);
       localStorage.removeItem("currentSession");
     } catch (error: any) {
@@ -122,53 +129,64 @@ export const SessionProvider: React.FC = ({ children }) => {
     }
   };
 
-  const addRoll = (roll: IRoll) => {
-    let newState: ISession = { ...currSession! };
-
-    if (currSession) {
-      newState.stats.rolls.push(roll);
-
-      const newStats: IStats = { ...currSession.stats };
-
-      newStats[roll.die].rolls += 1;
-
-      if (newStats[roll.die].total.length == 0) newStats[roll.die].total.push(roll.result);
-      else newStats[roll.die].total.push(newStats[roll.die].total.at(-1) + roll.result);
-
-      newStats[roll.die].avg.push(newStats[roll.die].total.at(-1) / newStats[roll.die].rolls);
-      newStats[roll.die].history.push(newState.stats.rolls[newState.stats.rolls.length - 1]);
-
-      newState.stats = newStats;
-
-      setCurrSession(newState);
-    } else console.log("No session state found => Something went wrong.");
+  const removeSession = async (id: string) => {
+    try {
+      await deleteSession(currentUser, id);
+    } catch (error: any) {
+      console.log(error);
+    }
   };
 
-  function initializeStats(stats: IStats): IStats {
-    //FUTURE: Sort this after most used.... maybe enable in settings
+  const addRoll = (roll: IRoll, session: ISession): ISession => {
+    let newState: ISession = { ...session! };
 
-    stats.usedDice.sort((a: Dice, b: Dice) => sortDice(a, b, "desc"));
+    newState.stats.rolls.push(roll);
 
-    for (const die of stats.usedDice) {
-      stats = {
-        ...stats,
-        [die]: {
-          rolls: 0,
-          total: [],
-          avg: [],
-          history: [],
-        },
-      };
+    const newStats: IStats = { ...session.stats };
+
+    newStats[roll.die].rolls += 1;
+
+    if (newStats[roll.die].total.length == 0) newStats[roll.die].total.push(roll.result);
+    else newStats[roll.die].total.push(newStats[roll.die].total.at(-1) + roll.result);
+
+    newStats[roll.die].avg.push(newStats[roll.die].total.at(-1) / newStats[roll.die].rolls);
+    newStats[roll.die].history.push(newState.stats.rolls[newState.stats.rolls.length - 1]);
+
+    newState.stats = newStats;
+
+    return newState;
+  };
+
+  function initializeStats(localStats: IStats): IStats {
+    for (const die of allDice) {
+      const isUsed = localStats.usedDice.includes(die);
+      const exists = localStats[die];
+
+      if (isUsed && !exists) {
+        localStats = {
+          ...localStats,
+          [die]: {
+            rolls: 0,
+            total: [],
+            avg: [],
+            history: [],
+          },
+        };
+      } else if (exists && !isUsed) {
+        delete localStats[die];
+      }
     }
 
-    return stats;
+    localStats.usedDice.sort((a: Dice, b: Dice) => sortDice(a, b, "desc"));
+
+    return localStats;
   }
 
   let getSession = null;
 
   if (sessions.length > 0) {
-    getSession = (id: string): ISession | null => {
-      let value = null;
+    getSession = (id: string): ISession | undefined => {
+      let value = undefined;
 
       console.log("Fetching Session: " + id);
       console.log(sessions);
@@ -187,9 +205,11 @@ export const SessionProvider: React.FC = ({ children }) => {
 
   const value: ISessionContext = {
     currSession,
+    setCurrSession,
     sessions,
     startSession,
     endSession,
+    removeSession,
     addRoll,
     stats,
     getSession,

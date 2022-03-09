@@ -2,19 +2,21 @@ import React from "react";
 import DiceCheckbox from "./DiceCheckbox";
 
 type Props = {
-  handleChange: (die: Dice, checked: boolean) => void;
+  handleChange: (die: Dice, checked: boolean) => any;
+  checkedDice?: Dice[];
 };
 
-const DicePicker: React.FC<Props> = ({ handleChange }) => {
+const DicePicker: React.FC<Props> = ({ handleChange, checkedDice }) => {
   return (
     <div className="dice-grid">
-      <DiceCheckbox die="D4" handleChange={handleChange} />
-      <DiceCheckbox die="D6" handleChange={handleChange} />
-      <DiceCheckbox die="D8" handleChange={handleChange} />
-      <DiceCheckbox die="D10" handleChange={handleChange} />
-      <DiceCheckbox die="D12" handleChange={handleChange} />
-      <DiceCheckbox die="D20" handleChange={handleChange} />
-      <DiceCheckbox die="D100" handleChange={handleChange} />
+      {["D4", "D6", "D8", "D10", "D12", "D20", "D100"].map(die => (
+        <DiceCheckbox
+          key={die}
+          die={die as Dice}
+          check={checkedDice?.includes(die as Dice)}
+          handleChange={handleChange}
+        />
+      ))}
     </div>
   );
 };
