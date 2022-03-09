@@ -1,6 +1,7 @@
 import { ChartDataset } from "chart.js";
 import React, { useEffect, useState } from "react";
 import { useColor } from "../contexts/ColorContext";
+import { sortDice } from "../helper/sortDice";
 import DonutGraph from "./DonutGraph";
 import DynDicePicker from "./DynDicePicker";
 import LineGraph from "./LineGraph";
@@ -23,11 +24,13 @@ const DiceStatView: React.FC<Props> = ({ stats }) => {
       let borderColor: string[] = [];
       let backgroundColor: string[] = [];
 
-      stats.usedDice.forEach((die, i) => {
-        data.push(stats[die].rolls);
-        borderColor.push(colors.getHSL!(`primary-${8 - i}00`, 0.8));
-        backgroundColor.push(colors.getHSL!(`primary-${8 - i}00`, 0.4));
-      });
+      stats.usedDice
+        .sort((a, b) => sortDice(a, b, stats.sort ? stats.sort : "desc"))
+        .forEach((die, i) => {
+          data.push(stats[die].rolls);
+          borderColor.push(colors.getHSL!(`primary-${8 - i}00`, 0.8));
+          backgroundColor.push(colors.getHSL!(`primary-${8 - i}00`, 0.4));
+        });
 
       const dataset: ChartDataset<"doughnut">[] = [
         {

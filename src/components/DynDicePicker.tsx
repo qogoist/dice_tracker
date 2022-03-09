@@ -1,23 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { sortDice } from "../helper/sortDice";
 import DiceButton from "./DiceButton";
 
 type Props = {
   dice: (Dice | "Overview")[];
   active?: Dice | "Overview";
+  sort?: SortMethods;
   handleChange: (e: React.FormEvent<HTMLButtonElement>) => void;
 };
 
-const DynDicePicker: React.FC<Props> = ({ dice, active, handleChange }) => {
+const DynDicePicker: React.FC<Props> = ({ dice, active, sort, handleChange }) => {
   return (
     <div className="dice-grid">
-      {dice.map(die => (
-        <DiceButton
-          key={die}
-          label={die}
-          active={active === die ? true : false}
-          handleChange={handleChange}
-        />
-      ))}
+      {dice
+        .sort((a, b) => sortDice(a, b, sort ? sort : "desc"))
+        .map(die => (
+          <DiceButton
+            key={die}
+            label={die}
+            active={active === die ? true : false}
+            handleChange={handleChange}
+          />
+        ))}
     </div>
   );
 };

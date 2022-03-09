@@ -7,15 +7,17 @@ type Props = {
   show: boolean;
   onClose: () => void;
   onDelete: () => void;
+  message: string;
+  type: string;
 };
 
-const DeleteModal: React.FC<Props> = ({ show, onClose, onDelete }) => {
+const DeleteModal: React.FC<Props> = ({ show, onClose, onDelete, message, type }) => {
   return (
     <Backdrop show={show} onClick={onClose}>
       <Modal enabled={show}>
-        <h1>Deleting Session</h1>
+        <h1>{type}</h1>
         <div className="modal-content">
-          <p>You are about to delete this session. This cannot be undone. Proceed?</p>
+          <p>{message}</p>
           <button className="btn btn-danger" onClick={onDelete}>
             Delete
           </button>

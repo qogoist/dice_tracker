@@ -7,6 +7,7 @@ import FormLabel from "./FormLabel";
 import { useSession } from "../contexts/SessionContext";
 import { getLocalISOString } from "../helper/date";
 import AlertBox from "./AlertBox";
+import DeleteModal from "./DeleteModal";
 
 const NewSession: React.FC = () => {
   const [data, setData] = useState<ISession>({
@@ -19,13 +20,17 @@ const NewSession: React.FC = () => {
     },
   });
   const [err, setErr] = useState<boolean>(false);
+  const [modal, setModal] = useState(false);
+  const [modalPromise, setModalPromise] = useState<{ resolve?: any; reject?: any; die?: Dice }>({});
+
   const navigate = useNavigate();
-  const { startSession, endSession } = useSession();
   const formRef = useRef<HTMLFormElement>(null);
+
+  const { startSession, endSession } = useSession();
   const { state } = useLocation();
 
   useEffect(() => {
-    if (state) setData(state);
+    if (state) setData(state.session);
   }, [state]);
 
   useEffect(() => {
@@ -42,7 +47,8 @@ const NewSession: React.FC = () => {
     }
 
     if (state) {
-      endSession?.(data); //TODO: On edit of ongoing session this should not end :)
+      if (state.edit) endSession?.(data);
+      else startSession?.(data);
       navigate(-1);
       return;
     }
@@ -65,21 +71,68 @@ const NewSession: React.FC = () => {
     });
   };
 
-  const handleDice = (die: Dice, checked: boolean) => {
+  const modalClose = async (die: Dice) => {
+    return new Promise((resolve, reject) => {
+      console.log("Promise and whatnot.");
+      setModalPromise({ resolve, reject, die });
+    });
+  };
+
+  const handleDice = async (die: Dice, checked: boolean) => {
     const dice = { ...data.stats };
 
-    console.log("Handling ", die, checked);
-    console.log(dice.usedDice);
+    if (checked && !dice.usedDice.includes(die)) {
+      addDie(die, dice);
+    } else if (!checked && dice.usedDice.includes(die)) {
+      if (dice[die].rolls > 0) {
+        setModal(true);
+        const value = await modalClose(die);
+        return value;
+      }
 
-    if (checked && !dice.usedDice.includes(die)) dice.usedDice.push(die);
-    else if (!checked && dice.usedDice.includes(die))
-      dice.usedDice.splice(dice.usedDice.indexOf(die), 1);
+      deleteDie(die, dice);
+    }
 
-    console.log(dice.usedDice);
+    return true;
+  };
+
+  const addDie = (die: Dice, stats: IStats) => {
+    stats.usedDice.push(die);
+    stats[die] = {
+      rolls: 0,
+      total: [],
+      avg: [],
+      history: [],
+    };
+
     setData({
       ...data,
-      stats: dice,
+      stats: stats,
     });
+  };
+
+  const deleteDie = (die: Dice, stats: IStats) => {
+    stats.usedDice.splice(stats.usedDice.indexOf(die), 1);
+    delete stats[die];
+
+    setData({
+      ...data,
+      stats: stats,
+    });
+  };
+
+  const deleteAbort = () => {
+    console.log("Aborting deletion");
+    modalPromise.resolve(false);
+    setModal(false);
+  };
+
+  const deleteConfirm = () => {
+    console.log("Confirming deletion");
+    deleteDie(modalPromise.die!, { ...data.stats });
+
+    modalPromise.resolve(true);
+    setModal(false);
   };
 
   return (
@@ -124,6 +177,14 @@ const NewSession: React.FC = () => {
           )}
         </form>
       </div>
+
+      <DeleteModal
+        show={modal}
+        message="You are about to delete a die that has already been rolled. Do you wish to proceed?"
+        type="Deleting Data"
+        onClose={deleteAbort}
+        onDelete={deleteConfirm}
+      />
     </div>
   );
 };

@@ -37,7 +37,7 @@ const SessionPage: React.FC = () => {
   };
 
   const handleEdit = () => {
-    navigate("/edit-session", { state: session });
+    navigate("/edit-session", { state: { session: session, edit: true } });
   };
 
   if (getSession === null) {
@@ -81,6 +81,8 @@ const SessionPage: React.FC = () => {
         </div>
 
         <DeleteModal
+          message="You are about to delete this session. This cannot be undone. Proceed?"
+          type="Deleting Session"
           show={deleteModal}
           onClose={() => setDeleteModal(false)}
           onDelete={handleDelete}

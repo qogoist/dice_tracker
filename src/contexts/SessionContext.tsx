@@ -22,6 +22,8 @@ export const useSession = () => {
   return useContext(SessionContext);
 };
 
+const allDice: Dice[] = ["D4", "D6", "D8", "D10", "D12", "D20", "D100"];
+
 export const SessionProvider: React.FC = ({ children }) => {
   const { currentUser } = useAuth();
   const [currSession, setCurrSession] = useState<ISession>();
@@ -29,7 +31,8 @@ export const SessionProvider: React.FC = ({ children }) => {
   const [stats, setStats] = useState<IStats>(() => {
     return initializeStats({
       rolls: [],
-      usedDice: ["D4", "D6", "D8", "D10", "D12", "D20", "D100"],
+      usedDice: allDice,
+      sort: "desc",
     });
   });
 
@@ -76,7 +79,7 @@ export const SessionProvider: React.FC = ({ children }) => {
 
     let stats = initializeStats({
       rolls: [],
-      usedDice: ["D4", "D6", "D8", "D10", "D12", "D20", "D100"],
+      usedDice: allDice,
     });
 
     loadSessions.forEach(data => {
@@ -110,7 +113,7 @@ export const SessionProvider: React.FC = ({ children }) => {
   };
 
   const startSession = (state: ISession) => {
-    state.stats = initializeStats(state.stats);
+    // state.stats = initializeStats(state.stats);
     setCurrSession(state);
   };
 
@@ -154,24 +157,29 @@ export const SessionProvider: React.FC = ({ children }) => {
     return newState;
   };
 
-  function initializeStats(stats: IStats): IStats {
-    //FUTURE: Sort this after most used.... maybe enable in settings
+  function initializeStats(localStats: IStats): IStats {
+    for (const die of allDice) {
+      const isUsed = localStats.usedDice.includes(die);
+      const exists = localStats[die];
 
-    stats.usedDice.sort((a: Dice, b: Dice) => sortDice(a, b, "desc"));
-
-    for (const die of stats.usedDice) {
-      stats = {
-        ...stats,
-        [die]: {
-          rolls: 0,
-          total: [],
-          avg: [],
-          history: [],
-        },
-      };
+      if (isUsed && !exists) {
+        localStats = {
+          ...localStats,
+          [die]: {
+            rolls: 0,
+            total: [],
+            avg: [],
+            history: [],
+          },
+        };
+      } else if (exists && !isUsed) {
+        delete localStats[die];
+      }
     }
 
-    return stats;
+    localStats.usedDice.sort((a: Dice, b: Dice) => sortDice(a, b, "desc"));
+
+    return localStats;
   }
 
   let getSession = null;

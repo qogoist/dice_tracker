@@ -54,7 +54,12 @@ const OngoingSession: React.FC = () => {
   };
 
   const handleEdit = () => {
-    navigate("/edit-session", { state: session }); //TODO: Probably need a different page or smth
+    navigate("/edit-session", {
+      state: {
+        session: session,
+        edit: state ? true : false,
+      },
+    });
   };
 
   if (session) {
