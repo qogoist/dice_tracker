@@ -12,6 +12,7 @@ export type ISessionContext = {
   startSession: (state: ISession) => void;
   endSession: (session: ISession, edit?: boolean, cont?: boolean) => void;
   removeSession: (id: string) => Promise<void>;
+  stopCurrentSession: () => void;
   addRoll: (roll: IRoll, session: ISession) => ISession;
   stats: IStats;
   getSession: ((id: string) => ISession | undefined) | null;
@@ -149,6 +150,11 @@ export const SessionProvider: React.FC = ({ children }) => {
     }
   };
 
+  const stopCurrentSession = () => {
+    setCurrSession(undefined);
+    localStorage.removeItem("currentSession");
+  };
+
   const addRoll = (roll: IRoll, session: ISession): ISession => {
     let newState: ISession = { ...session! };
 
@@ -222,6 +228,7 @@ export const SessionProvider: React.FC = ({ children }) => {
     startSession,
     endSession,
     removeSession,
+    stopCurrentSession,
     addRoll,
     stats,
     getSession,

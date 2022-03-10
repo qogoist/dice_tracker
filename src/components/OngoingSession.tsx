@@ -12,7 +12,7 @@ import { MdDoDisturb, MdEdit } from "react-icons/md";
 import DangerModal from "./DangerModal";
 
 const OngoingSession: React.FC = () => {
-  const { currSession, setCurrSession, addRoll, endSession } = useSession();
+  const { currSession, setCurrSession, addRoll, endSession, stopCurrentSession } = useSession();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [dangerModal, setDangerModal] = useState<boolean>(false);
   const [activeDie, setActiveDie] = useState<number>(0);
@@ -66,7 +66,7 @@ const OngoingSession: React.FC = () => {
 
   const handleCancel = (confirm: boolean) => {
     if (confirm) {
-      if (!state) setCurrSession?.(undefined);
+      if (!state) stopCurrentSession?.();
       navigate("/");
       return;
     }
