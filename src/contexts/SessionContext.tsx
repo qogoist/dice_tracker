@@ -3,13 +3,14 @@ import { QuerySnapshot } from "@firebase/firestore";
 import { addSession, deleteSession, getAllSessions, updateSession } from "../api/session";
 import { sortDice } from "../helper/sortDice";
 import { useAuth } from "./AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export type ISessionContext = {
   currSession: ISession | undefined;
   setCurrSession: (session: ISession | undefined) => void;
   sessions: ISession[];
   startSession: (state: ISession) => void;
-  endSession: (session: ISession) => void;
+  endSession: (session: ISession, edit?: boolean, cont?: boolean) => void;
   removeSession: (id: string) => Promise<void>;
   addRoll: (roll: IRoll, session: ISession) => ISession;
   stats: IStats;
@@ -35,6 +36,8 @@ export const SessionProvider: React.FC = ({ children }) => {
       sort: "desc",
     });
   });
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log(
@@ -113,19 +116,26 @@ export const SessionProvider: React.FC = ({ children }) => {
   };
 
   const startSession = (state: ISession) => {
-    // state.stats = initializeStats(state.stats);
     setCurrSession(state);
+    navigate("/ongoing-session");
   };
 
-  const endSession = (session: ISession) => {
-    console.log(session.stats.usedDice);
+  const endSession = (session: ISession, edit: boolean = false, cont: boolean = false) => {
+    if (edit) {
+      if (cont) {
+        navigate("/continue-session", { state: session });
+        return;
+      }
+      updateSession(currentUser, session);
+      navigate(-1);
+      return;
+    }
 
     try {
-      if (session._id) updateSession(currentUser, session);
-      else addSession(currentUser, currSession);
-      //TODO: When editing this isn't what we want to do.
+      addSession(currentUser, currSession);
       setCurrSession(undefined);
       localStorage.removeItem("currentSession");
+      navigate("/");
     } catch (error: any) {
       console.log(error);
     }

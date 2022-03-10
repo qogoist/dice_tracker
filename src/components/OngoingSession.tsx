@@ -50,7 +50,6 @@ const OngoingSession: React.FC = () => {
 
   const handleEndSession = () => {
     endSession?.(session!);
-    navigate("..");
   };
 
   const handleEdit = () => {
@@ -58,6 +57,7 @@ const OngoingSession: React.FC = () => {
       state: {
         session: session,
         edit: state ? true : false,
+        cont: state ? true : false,
       },
     });
   };
