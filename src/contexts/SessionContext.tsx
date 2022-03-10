@@ -3,14 +3,16 @@ import { QuerySnapshot } from "@firebase/firestore";
 import { addSession, deleteSession, getAllSessions, updateSession } from "../api/session";
 import { sortDice } from "../helper/sortDice";
 import { useAuth } from "./AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export type ISessionContext = {
   currSession: ISession | undefined;
   setCurrSession: (session: ISession | undefined) => void;
   sessions: ISession[];
   startSession: (state: ISession) => void;
-  endSession: (session: ISession) => void;
+  endSession: (session: ISession, edit?: boolean, cont?: boolean) => void;
   removeSession: (id: string) => Promise<void>;
+  stopCurrentSession: () => void;
   addRoll: (roll: IRoll, session: ISession) => ISession;
   stats: IStats;
   getSession: ((id: string) => ISession | undefined) | null;
@@ -35,6 +37,8 @@ export const SessionProvider: React.FC = ({ children }) => {
       sort: "desc",
     });
   });
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log(
@@ -113,17 +117,26 @@ export const SessionProvider: React.FC = ({ children }) => {
   };
 
   const startSession = (state: ISession) => {
-    // state.stats = initializeStats(state.stats);
     setCurrSession(state);
+    navigate("/ongoing-session");
   };
 
-  const endSession = (session: ISession) => {
-    try {
-      if (session._id) updateSession(currentUser, session);
-      else addSession(currentUser, currSession);
+  const endSession = (session: ISession, edit: boolean = false, cont: boolean = false) => {
+    if (edit) {
+      if (cont) {
+        navigate("/continue-session", { state: session });
+        return;
+      }
+      updateSession(currentUser, session);
+      navigate(-1);
+      return;
+    }
 
+    try {
+      addSession(currentUser, currSession);
       setCurrSession(undefined);
       localStorage.removeItem("currentSession");
+      navigate("/");
     } catch (error: any) {
       console.log(error);
     }
@@ -135,6 +148,11 @@ export const SessionProvider: React.FC = ({ children }) => {
     } catch (error: any) {
       console.log(error);
     }
+  };
+
+  const stopCurrentSession = () => {
+    setCurrSession(undefined);
+    localStorage.removeItem("currentSession");
   };
 
   const addRoll = (roll: IRoll, session: ISession): ISession => {
@@ -210,6 +228,7 @@ export const SessionProvider: React.FC = ({ children }) => {
     startSession,
     endSession,
     removeSession,
+    stopCurrentSession,
     addRoll,
     stats,
     getSession,

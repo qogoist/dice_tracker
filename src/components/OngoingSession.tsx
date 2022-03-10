@@ -8,11 +8,13 @@ import Card from "./Card";
 import DiceModal from "./DiceModal";
 import DynDicePicker from "./DynDicePicker";
 import DiceStatView from "./DiceStatView";
-import { MdEdit } from "react-icons/md";
+import { MdDoDisturb, MdEdit } from "react-icons/md";
+import DangerModal from "./DangerModal";
 
 const OngoingSession: React.FC = () => {
-  const { currSession, setCurrSession, addRoll, endSession } = useSession();
+  const { currSession, setCurrSession, addRoll, endSession, stopCurrentSession } = useSession();
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [dangerModal, setDangerModal] = useState<boolean>(false);
   const [activeDie, setActiveDie] = useState<number>(0);
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -50,7 +52,6 @@ const OngoingSession: React.FC = () => {
 
   const handleEndSession = () => {
     endSession?.(session!);
-    navigate("..");
   };
 
   const handleEdit = () => {
@@ -58,17 +59,38 @@ const OngoingSession: React.FC = () => {
       state: {
         session: session,
         edit: state ? true : false,
+        cont: state ? true : false,
       },
     });
+  };
+
+  const handleCancel = (confirm: boolean) => {
+    if (confirm) {
+      if (!state) stopCurrentSession?.();
+      navigate("/");
+      return;
+    }
+
+    setDangerModal(true);
   };
 
   if (session) {
     return (
       <div className="session-grid content">
-        <h1>{session.name}</h1>
+        <h1>
+          {state && "Editing: "}
+          {session.name}
+        </h1>
         <div className="buttons">
           <button className="btn btn-neutral icon" title="Edit Session Info" onClick={handleEdit}>
             <MdEdit />
+          </button>
+          <button
+            className="btn btn-neutral-danger icon"
+            title="Cancel Session"
+            onClick={() => handleCancel(false)}
+          >
+            <MdDoDisturb />
           </button>
           <Button className="btn" onClick={handleEndSession}>
             End Session
@@ -86,6 +108,15 @@ const OngoingSession: React.FC = () => {
           show={showModal}
           handleClose={() => setShowModal(false)}
           hndClick={handleLogDie}
+        />
+
+        <DangerModal
+          show={dangerModal}
+          message="You are about to stop this session without saving. Any changes will not be lost. Continue?"
+          type="Stop Session"
+          btn="Continue"
+          onClose={() => setDangerModal(false)}
+          onDelete={() => handleCancel(true)}
         />
       </div>
     );

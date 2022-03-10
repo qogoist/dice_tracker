@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation } from "react-router";
 
 import DicePicker from "./DicePicker";
 import FormLabel from "./FormLabel";
@@ -7,7 +7,7 @@ import FormLabel from "./FormLabel";
 import { useSession } from "../contexts/SessionContext";
 import { getLocalISOString } from "../helper/date";
 import AlertBox from "./AlertBox";
-import DeleteModal from "./DeleteModal";
+import DangerModal from "./DangerModal";
 
 const NewSession: React.FC = () => {
   const [data, setData] = useState<ISession>({
@@ -23,7 +23,6 @@ const NewSession: React.FC = () => {
   const [modal, setModal] = useState(false);
   const [modalPromise, setModalPromise] = useState<{ resolve?: any; reject?: any; die?: Dice }>({});
 
-  const navigate = useNavigate();
   const formRef = useRef<HTMLFormElement>(null);
 
   const { startSession, endSession } = useSession();
@@ -47,15 +46,13 @@ const NewSession: React.FC = () => {
     }
 
     if (state) {
-      if (state.edit) endSession?.(data);
+      if (state.edit) endSession?.(data, state.edit, state.cont);
       else startSession?.(data);
-      navigate(-1);
       return;
     }
 
     try {
       startSession?.(data);
-      navigate("/ongoing-session");
     } catch (error: any) {
       console.log(error);
     }
@@ -178,7 +175,7 @@ const NewSession: React.FC = () => {
         </form>
       </div>
 
-      <DeleteModal
+      <DangerModal
         show={modal}
         message="You are about to delete a die that has already been rolled. Do you wish to proceed?"
         type="Deleting Data"

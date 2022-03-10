@@ -15,7 +15,7 @@ const Dashboard: React.FC = () => {
       {currSession ? (
         <SessionPreview current={true} session={currSession} />
       ) : (
-        <p className="floating-text">
+        <p className="floating-text current-replacer">
           There is no ongoing session. Do you want to{" "}
           <Link to="/new-session">start a new session?</Link>
         </p>
