@@ -9,9 +9,10 @@ type Props = {
   onDelete: () => void;
   message: string;
   type: string;
+  btn?: string;
 };
 
-const DeleteModal: React.FC<Props> = ({ show, onClose, onDelete, message, type }) => {
+const DangerModal: React.FC<Props> = ({ show, onClose, onDelete, message, type, btn }) => {
   return (
     <Backdrop show={show} onClick={onClose}>
       <Modal enabled={show}>
@@ -19,7 +20,7 @@ const DeleteModal: React.FC<Props> = ({ show, onClose, onDelete, message, type }
         <div className="modal-content">
           <p>{message}</p>
           <button className="btn btn-danger" onClick={onDelete}>
-            Delete
+            {btn ? btn : "Delete"}
           </button>
         </div>
         <ModalBtnClose onClick={onClose} />
@@ -28,4 +29,4 @@ const DeleteModal: React.FC<Props> = ({ show, onClose, onDelete, message, type }
   );
 };
 
-export default DeleteModal;
+export default DangerModal;

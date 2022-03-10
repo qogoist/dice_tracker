@@ -222,6 +222,13 @@ input:-internal-autofill-selected {
   --btn-clr-back: var(--clr-gray-200);
 }
 
+.btn-neutral-danger {
+  --btn-clr: var(--clr-primary-500);
+  --btn-clr-back: var(--clr-gray-200);
+  --btn-clr-hover: var(--clr-gray-200);
+  --btn-clr-hover-back: var(--clr-danger-500);
+}
+
 .btn:hover,
 .btn:focus-visible,
 .btn-outline:hover,

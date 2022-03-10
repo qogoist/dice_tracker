@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSession } from "../contexts/SessionContext";
 
 import Card from "./Card";
-import DeleteModal from "./DeleteModal";
+import DangerModal from "./DangerModal";
 import DiceStatView from "./DiceStatView";
 
 const SessionPage: React.FC = () => {
@@ -80,7 +80,7 @@ const SessionPage: React.FC = () => {
           </button>
         </div>
 
-        <DeleteModal
+        <DangerModal
           message="You are about to delete this session. This cannot be undone. Proceed?"
           type="Deleting Session"
           show={deleteModal}

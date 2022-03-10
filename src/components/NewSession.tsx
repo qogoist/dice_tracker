@@ -7,7 +7,7 @@ import FormLabel from "./FormLabel";
 import { useSession } from "../contexts/SessionContext";
 import { getLocalISOString } from "../helper/date";
 import AlertBox from "./AlertBox";
-import DeleteModal from "./DeleteModal";
+import DangerModal from "./DangerModal";
 
 const NewSession: React.FC = () => {
   const [data, setData] = useState<ISession>({
@@ -175,7 +175,7 @@ const NewSession: React.FC = () => {
         </form>
       </div>
 
-      <DeleteModal
+      <DangerModal
         show={modal}
         message="You are about to delete a die that has already been rolled. Do you wish to proceed?"
         type="Deleting Data"
