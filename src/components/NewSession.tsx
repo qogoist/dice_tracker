@@ -47,6 +47,12 @@ const NewSession: React.FC = () => {
     }
 
     if (state) {
+      //TODO: Distringuish better between
+      // 1.) New Session,
+      // 2.) Pure Info Edit leading back to Session View,
+      // 3.) Info Edit coming from ongoing session.
+      // 4.) Info edit coming from resumed session.
+      // (3. and 4. might be combined.)
       if (state.edit) endSession?.(data);
       else startSession?.(data);
       navigate(-1);

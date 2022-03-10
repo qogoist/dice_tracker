@@ -118,10 +118,12 @@ export const SessionProvider: React.FC = ({ children }) => {
   };
 
   const endSession = (session: ISession) => {
+    console.log(session.stats.usedDice);
+
     try {
       if (session._id) updateSession(currentUser, session);
       else addSession(currentUser, currSession);
-
+      //TODO: When editing this isn't what we want to do.
       setCurrSession(undefined);
       localStorage.removeItem("currentSession");
     } catch (error: any) {
