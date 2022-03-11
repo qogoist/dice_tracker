@@ -281,12 +281,13 @@ input:-internal-autofill-selected {
   --card-clr-bg: var(--clr-gray-100);
   --card-clr-txt: var(--clr-gray-800);
   --card-clr-head: var(--clr-gray-900);
+  --card-padding: 1.5rem;
   position: relative;
   display: flex;
   gap: 1rem;
   flex-direction: column;
   align-items: center;
-  padding: 1.5rem;
+  padding: var(--card-padding);
   background: hsl(var(--card-clr-bg) / 0.7);
   color: hsl(var(--card-clr-txt));
   border-radius: var(--br);
@@ -304,12 +305,6 @@ input:-internal-autofill-selected {
 
 .card h2 {
   color: hsl(var(--card-clr-head));
-}
-
-.card .spaced {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
 }
 
 .card-fit {
@@ -733,10 +728,71 @@ input:-internal-autofill-selected {
 }
 
 .session-preview {
+  --card-padding: 1.25rem;
   width: 100%;
+  max-width: 100%;
   direction: ltr;
   transition: transform var(--t-speed-4) ease-out;
   hyphens: auto;
+
+  display: grid;
+  gap: 0;
+  grid-template-areas:
+    "name name rolls"
+    "game ... date";
+}
+.session-preview > * {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.session-preview > h1 {
+  grid-area: name;
+  justify-self: start;
+  align-self: center;
+  text-align: left;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+.session-preview > .rolls {
+  grid-area: rolls;
+  justify-self: end;
+  align-self: start;
+
+  display: flex;
+  align-items: center;
+
+  font-size: 0.9rem;
+}
+.rolls > .svg-container {
+  --fill-clr: black;
+  width: 2.5rem;
+
+  display: grid;
+  place-content: center;
+}
+.rolls > .num {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-right: 0.25ch;
+  margin-left: -0.25ch;
+}
+
+.session-preview > .game {
+  grid-area: game;
+  justify-self: start;
+  align-self: start;
+
+  font-size: 0.9rem;
+  font-style: italic;
+}
+.session-preview > .date {
+  grid-area: date;
+  justify-self: end;
+  align-self: start;
+
+  font-size: 0.9rem;
+  font-style: italic;
 }
 
 .session-preview:hover,
@@ -756,6 +812,25 @@ input:-internal-autofill-selected {
 
 .session-preview:hover::before {
   opacity: 1;
+}
+
+.preview-content {
+  width: 100%;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.preview-content > .left {
+  justify-self: start;
+}
+
+.preview-content > .center {
+  justify-self: center;
+}
+
+.preview-content > .right {
+  justify-self: end;
 }
 
 .floating-text {

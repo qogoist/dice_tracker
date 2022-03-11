@@ -35,8 +35,9 @@ const LineGraph: React.FC<Props> = ({ die, labels, datasets }) => {
         },
         scales: {
           xAxis: {
-            // min: 0,
-            // max: 10,
+            ticks: {
+              stepSize: 1,
+            },
             grid: {
               display: false,
             },
@@ -137,6 +138,7 @@ const LineGraph: React.FC<Props> = ({ die, labels, datasets }) => {
 
   useEffect(() => {
     if (chart.current) {
+      chart.current.resetZoom();
       chart.current.options.scales!.yAxis!.max = parseInt(die.slice(1));
       chart.current.update();
     }
@@ -147,9 +149,9 @@ const LineGraph: React.FC<Props> = ({ die, labels, datasets }) => {
       chart.current.data.labels = labels;
       chart.current.data.datasets = datasets;
 
-      chart.current.update();
       chart.current.resetZoom();
-      chart.current.pan({ x: -(chart.current.width * labels.length) }, undefined, "normal");
+      // chart.current.pan({ x: -100 }, undefined, "show");
+      chart.current.update();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [labels, datasets]);
