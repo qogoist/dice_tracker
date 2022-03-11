@@ -28,7 +28,7 @@ const Settings: React.FC = () => {
     return true;
   };
 
-  const handleSort = (sort: React.FormEvent<HTMLSelectElement>) => {
+  const handleDiceSort = (sort: React.FormEvent<HTMLSelectElement>) => {
     const value = sort.currentTarget.value as DiceSortMethods;
 
     console.log("Sort Method changed: ", value);
@@ -36,6 +36,17 @@ const Settings: React.FC = () => {
     setLocalSettings({
       ...localSettings,
       diceSort: value,
+    });
+  };
+
+  const handleSessionSort = (sort: React.FormEvent<HTMLSelectElement>) => {
+    const value = sort.currentTarget.value as SessionSortMethods;
+
+    console.log("Sort Method changed: ", value);
+
+    setLocalSettings({
+      ...localSettings,
+      sessionSort: value,
     });
   };
 
@@ -69,7 +80,16 @@ const Settings: React.FC = () => {
 
       <Card className="full-width" title="Select your preferred method of sorting your dice.">
         <h2>Dice Sorting Method</h2>
-        <SortPicker handleChange={handleSort} active={settings.diceSort} />
+        <SortPicker type="dice" handleChange={handleDiceSort} active={settings.diceSort} />
+      </Card>
+
+      <Card className="full-width" title="Select your preferred method of sorting your session.">
+        <h2>Session Sorting Method</h2>
+        <SortPicker
+          type="sessions"
+          handleChange={handleSessionSort}
+          active={settings.sessionSort}
+        />
       </Card>
 
       <button className="btn full-width" onClick={handleSave}>

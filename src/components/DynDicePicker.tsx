@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { sortDice } from "../helper/sortDice";
+import { sortDice } from "../helper/sorting";
 import DiceButton from "./DiceButton";
 
 type Props = {

@@ -2,7 +2,7 @@ import { ChartDataset } from "chart.js";
 import React, { useEffect, useState } from "react";
 import { useColor } from "../contexts/ColorContext";
 import { useSettings } from "../contexts/SettingsContext";
-import { sortDice } from "../helper/sortDice";
+import { sortDice } from "../helper/sorting";
 import DonutGraph from "./DonutGraph";
 import DynDicePicker from "./DynDicePicker";
 import LineGraph from "./LineGraph";

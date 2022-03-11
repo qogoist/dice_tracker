@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { QuerySnapshot } from "@firebase/firestore";
 import { addSession, deleteSession, getAllSessions, updateSession } from "../api/session";
-import { sortDice } from "../helper/sortDice";
+import { sortDice } from "../helper/sorting";
 import { useAuth } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
 import { AllDice } from "../helper/globals";

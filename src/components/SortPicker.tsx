@@ -1,12 +1,18 @@
 import React from "react";
-import { SortMethodMap, SortMethods } from "../helper/globals";
+import {
+  DiceSortMethodMap,
+  DiceSortMethods,
+  SessionSortMethods,
+  SessionSortMethodsMap,
+} from "../helper/globals";
 
 type Props = {
-  active: DiceSortMethods;
+  type: "dice" | "sessions";
+  active: DiceSortMethods | SessionSortMethods;
   handleChange: (e: React.FormEvent<HTMLSelectElement>) => void;
 };
 
-const SortPicker: React.FC<Props> = ({ active, handleChange }) => {
+const SortPicker: React.FC<Props> = ({ type, active, handleChange }) => {
   return (
     <select
       name="sort-select"
@@ -14,11 +20,17 @@ const SortPicker: React.FC<Props> = ({ active, handleChange }) => {
       onChange={handleChange}
       defaultValue={active}
     >
-      {SortMethods.map(sort => (
-        <option value={sort} key={sort}>
-          {SortMethodMap[sort]}
-        </option>
-      ))}
+      {type === "dice"
+        ? DiceSortMethods.map(sort => (
+            <option value={sort} key={sort}>
+              {DiceSortMethodMap[sort]}
+            </option>
+          ))
+        : SessionSortMethods.map(sort => (
+            <option value={sort} key={sort}>
+              {SessionSortMethodsMap[sort]}
+            </option>
+          ))}
     </select>
   );
 };

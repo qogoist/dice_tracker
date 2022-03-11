@@ -23,6 +23,7 @@ export const SettingsProvider: React.FC = ({ children }) => {
   const [settings, setSettings] = useState<Settings>({
     preferredDice: [],
     diceSort: "desc",
+    sessionSort: "latest",
   });
 
   useEffect(() => {
