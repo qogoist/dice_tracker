@@ -3,14 +3,27 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
+  User,
 } from "firebase/auth";
 
 import { auth } from "../firebase";
 
-const AuthContext = createContext<any>(null);
+export type IAuthContext = {
+  currentUser: User;
+  signup: (email: string, pass: string) => Promise<any>;
+  login: (email: string, pass: string) => Promise<any>;
+  logout: () => Promise<any>;
+  resetPassword: (email: string) => Promise<any>;
+};
+
+const AuthContext = createContext<IAuthContext | undefined>(undefined);
 
 export const useAuth = () => {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+
+  if (context === undefined) throw new Error("Context not defined");
+
+  return context;
 };
 
 export const AuthProvider: React.FC = ({ children }) => {

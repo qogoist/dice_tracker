@@ -18,10 +18,14 @@ export type ISessionContext = {
   getSession: ((id: string) => ISession | undefined) | null;
 };
 
-export const SessionContext = createContext<Partial<ISessionContext>>({});
+export const SessionContext = createContext<ISessionContext | undefined>(undefined);
 
 export const useSession = () => {
-  return useContext(SessionContext);
+  const context = useContext(SessionContext);
+
+  if (context === undefined) throw new Error("Context not defined");
+
+  return context;
 };
 
 const allDice: Dice[] = ["D4", "D6", "D8", "D10", "D12", "D20", "D100"];
@@ -30,11 +34,11 @@ export const SessionProvider: React.FC = ({ children }) => {
   const { currentUser } = useAuth();
   const [currSession, setCurrSession] = useState<ISession>();
   const [sessions, setSessions] = useState<ISession[]>([]);
+
   const [stats, setStats] = useState<IStats>(() => {
     return initializeStats({
       rolls: [],
       usedDice: allDice,
-      sort: "desc",
     });
   });
 

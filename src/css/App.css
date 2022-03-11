@@ -212,6 +212,17 @@ input:-internal-autofill-selected {
   box-shadow: none;
 }
 
+.btn.icon {
+  display: grid;
+  place-items: center;
+  padding: 0.25em 1em;
+  font-size: 1.25rem;
+}
+
+.btn.full-width {
+  width: 100%;
+}
+
 .btn-danger {
   --btn-clr: var(--clr-gray-100);
   --btn-clr-back: var(--clr-danger-500);
@@ -263,13 +274,6 @@ input:-internal-autofill-selected {
 .btn:active,
 .btn-outline:active {
   transform: scale(0.95);
-}
-
-.btn.icon {
-  display: grid;
-  place-items: center;
-  padding: 0.25em 1em;
-  font-size: 1.25rem;
 }
 
 /* ====================================== */
@@ -727,6 +731,9 @@ input:-internal-autofill-selected {
   grid-area: current;
 }
 
+/* ====================================== */
+/* Session Preview */
+/* ====================================== */
 .session-preview {
   --card-padding: 1.25rem;
   width: 100%;
@@ -832,6 +839,10 @@ input:-internal-autofill-selected {
 .preview-content > .right {
   justify-self: end;
 }
+
+/* ====================================== */
+/* Floating Text */
+/* ====================================== */
 
 .floating-text {
   color: hsl(var(--clr-primary-100));
@@ -1019,6 +1030,17 @@ input:-internal-autofill-selected {
 
 .svg-container.desktop {
   display: none;
+}
+
+/* ====================================== */
+/* Settings */
+/* ====================================== */
+
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
 }
 
 /* ====================================== */
