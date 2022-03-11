@@ -4,6 +4,7 @@ import { db } from "../firebase";
 export const uploadSettings = async (user: any, settings: Settings) => {
   try {
     const docRef = await setDoc(doc(db, "users", user.uid, "details", "settings"), settings);
+    return docRef;
   } catch (error: any) {
     throw new Error(error);
   }

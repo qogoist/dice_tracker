@@ -27,7 +27,7 @@ const DiceStatView: React.FC<Props> = ({ stats }) => {
       let backgroundColor: string[] = [];
 
       stats.usedDice
-        .sort((a, b) => sortDice(a, b, settings.sort))
+        .sort((a, b) => sortDice(a, b, settings.diceSort))
         .forEach((die, i) => {
           data.push(stats[die].rolls);
           borderColor.push(colors.getHSL!(`primary-${8 - i}00`, 0.8));
@@ -98,6 +98,7 @@ const DiceStatView: React.FC<Props> = ({ stats }) => {
         dice={["Overview", ...stats.usedDice]}
         active={activeChart}
         handleChange={handleClick}
+        sort={settings.diceSort}
       />
     </>
   );

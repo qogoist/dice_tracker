@@ -1,4 +1,4 @@
-export const sortDice = (a: Dice | "Overview", b: Dice | "Overview", type: SortMethods) => {
+export const sortDice = (a: Dice | "Overview", b: Dice | "Overview", type: DiceSortMethods) => {
   if (a === "Overview") return -1;
   if (b === "Overview") return 1;
 

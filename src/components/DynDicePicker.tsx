@@ -5,7 +5,7 @@ import DiceButton from "./DiceButton";
 type Props = {
   dice: (Dice | "Overview")[];
   active?: Dice | "Overview";
-  sort?: SortMethods;
+  sort?: DiceSortMethods;
   handleChange: (e: React.FormEvent<HTMLButtonElement>) => any;
 };
 

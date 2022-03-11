@@ -22,7 +22,7 @@ export const SettingsProvider: React.FC = ({ children }) => {
   const { currentUser } = useAuth();
   const [settings, setSettings] = useState<Settings>({
     preferredDice: [],
-    sort: "desc",
+    diceSort: "desc",
   });
 
   useEffect(() => {
@@ -30,9 +30,8 @@ export const SettingsProvider: React.FC = ({ children }) => {
   }, []);
 
   const saveSettings = async (settings: Settings) => {
-    console.log("New Settings", settings);
     setSettings(settings);
-    uploadSettings(currentUser, settings);
+    await uploadSettings(currentUser, settings);
   };
 
   async function fetchSettings() {

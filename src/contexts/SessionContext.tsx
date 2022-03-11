@@ -4,6 +4,7 @@ import { addSession, deleteSession, getAllSessions, updateSession } from "../api
 import { sortDice } from "../helper/sortDice";
 import { useAuth } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
+import { AllDice } from "../helper/globals";
 
 export type ISessionContext = {
   currSession: ISession | undefined;
@@ -28,8 +29,6 @@ export const useSession = () => {
   return context;
 };
 
-const allDice: Dice[] = ["D4", "D6", "D8", "D10", "D12", "D20", "D100"];
-
 export const SessionProvider: React.FC = ({ children }) => {
   const { currentUser } = useAuth();
   const [currSession, setCurrSession] = useState<ISession>();
@@ -38,7 +37,7 @@ export const SessionProvider: React.FC = ({ children }) => {
   const [stats, setStats] = useState<IStats>(() => {
     return initializeStats({
       rolls: [],
-      usedDice: allDice,
+      usedDice: AllDice,
     });
   });
 
@@ -87,7 +86,7 @@ export const SessionProvider: React.FC = ({ children }) => {
 
     let stats = initializeStats({
       rolls: [],
-      usedDice: allDice,
+      usedDice: AllDice,
     });
 
     loadSessions.forEach(data => {
@@ -180,7 +179,7 @@ export const SessionProvider: React.FC = ({ children }) => {
   };
 
   function initializeStats(localStats: IStats): IStats {
-    for (const die of allDice) {
+    for (const die of AllDice) {
       const isUsed = localStats.usedDice.includes(die);
       const exists = localStats[die];
 

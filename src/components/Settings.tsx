@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSettings } from "../contexts/SettingsContext";
 import Card from "./Card";
 import DicePicker from "./DicePicker";
+import SortPicker from "./SortPicker";
 
 const Settings: React.FC = () => {
   const { settings, saveSettings } = useSettings();
@@ -20,11 +21,22 @@ const Settings: React.FC = () => {
     else dice.splice(dice.indexOf(die), 1);
 
     setLocalSettings({
-      ...settings,
+      ...localSettings,
       preferredDice: dice,
     });
 
     return true;
+  };
+
+  const handleSort = (sort: React.FormEvent<HTMLSelectElement>) => {
+    const value = sort.currentTarget.value as DiceSortMethods;
+
+    console.log("Sort Method changed: ", value);
+
+    setLocalSettings({
+      ...localSettings,
+      diceSort: value,
+    });
   };
 
   const handleSave = async () => {
@@ -43,6 +55,7 @@ const Settings: React.FC = () => {
   return (
     <div className="settings content">
       <h1 className="floating-text">Settings</h1>
+
       <Card
         className="full-width"
         title="Select dice that should always be checked for new sessions."
@@ -53,9 +66,12 @@ const Settings: React.FC = () => {
           checkedDice={settings?.preferredDice ? settings.preferredDice : undefined}
         />
       </Card>
-      <Card className="full-width">
-        <h2>Standard Sorting Method</h2>
+
+      <Card className="full-width" title="Select your preferred method of sorting your dice.">
+        <h2>Dice Sorting Method</h2>
+        <SortPicker handleChange={handleSort} active={settings.diceSort} />
       </Card>
+
       <button className="btn full-width" onClick={handleSave}>
         {saving ? "Saving..." : "Save Settings"}
       </button>

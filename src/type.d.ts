@@ -27,9 +27,9 @@ interface IStats {
 
 type Dice = "D4" | "D6" | "D8" | "D10" | "D12" | "D20" | "D100";
 
-type SortMethods = "asc" | "desc";
+type DiceSortMethods = "asc" | "desc";
 
 type Settings = {
   preferredDice: Dice[];
-  sort: SortMethods;
+  diceSort: DiceSortMethods;
 };
