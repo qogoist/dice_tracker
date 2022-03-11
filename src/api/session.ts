@@ -1,13 +1,14 @@
 import { db } from "../firebase";
 import { collection, onSnapshot, addDoc, deleteDoc, doc, setDoc } from "firebase/firestore";
+import { User } from "firebase/auth";
 
-export const getAllSessions = (user: any, observer: any) => {
+export const getAllSessions = (user: User, observer: any) => {
   const unsub = onSnapshot(collection(db, "users", user.uid, "sessions"), observer);
 
   return unsub;
 };
 
-export const addSession = async (user: any, data: any): Promise<any> => {
+export const addSession = async (user: User, data: any): Promise<any> => {
   try {
     const session = data;
     const docRef = await addDoc(collection(db, "users", user.uid, "sessions"), session);
@@ -17,7 +18,7 @@ export const addSession = async (user: any, data: any): Promise<any> => {
   }
 };
 
-export const updateSession = async (user: any, session: any): Promise<any> => {
+export const updateSession = async (user: User, session: any): Promise<any> => {
   try {
     const data = { ...session };
     delete data._id;
@@ -28,7 +29,7 @@ export const updateSession = async (user: any, session: any): Promise<any> => {
   }
 };
 
-export const deleteSession = async (user: any, id: string): Promise<any> => {
+export const deleteSession = async (user: User, id: string): Promise<any> => {
   try {
     await deleteDoc(doc(db, "users", user.uid, "sessions", id));
   } catch (error: any) {

@@ -4,9 +4,11 @@ import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   User,
+  deleteUser,
 } from "firebase/auth";
 
 import { auth } from "../firebase";
+import { useNavigate } from "react-router-dom";
 
 export type IAuthContext = {
   currentUser: User;
@@ -14,6 +16,8 @@ export type IAuthContext = {
   login: (email: string, pass: string) => Promise<any>;
   logout: () => Promise<any>;
   resetPassword: (email: string) => Promise<any>;
+  resetData: () => void;
+  deleteAccount: () => Promise<any>;
 };
 
 const AuthContext = createContext<IAuthContext | undefined>(undefined);
@@ -29,6 +33,7 @@ export const useAuth = () => {
 export const AuthProvider: React.FC = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const signup = (email: string, pass: string): Promise<any> => {
     return createUserWithEmailAndPassword(auth, email, pass);
@@ -46,6 +51,20 @@ export const AuthProvider: React.FC = ({ children }) => {
     return sendPasswordResetEmail(auth, email);
   };
 
+  const resetData = () => {
+    console.log("Currently not working 😟");
+  };
+
+  const deleteAccount = async (): Promise<any> => {
+    //TODO: Reauthenticate user https://firebase.google.com/docs/auth/web/manage-users?hl=en#re-authenticate_a_user
+
+    await deleteUser(currentUser)
+      .then(() => navigate("/signup"))
+      .catch((error: any) => {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       setCurrentUser(user);
@@ -61,6 +80,8 @@ export const AuthProvider: React.FC = ({ children }) => {
     login,
     logout,
     resetPassword,
+    resetData,
+    deleteAccount,
   };
 
   return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;

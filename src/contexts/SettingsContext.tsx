@@ -38,6 +38,8 @@ export const SettingsProvider: React.FC = ({ children }) => {
   async function fetchSettings() {
     const set = await getSettings(currentUser);
 
+    if (!set) return uploadSettings(currentUser, settings);
+
     setSettings(set as Settings);
   }
 

@@ -1,14 +1,24 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import { useSettings } from "../contexts/SettingsContext";
 import Card from "./Card";
+import DangerModal from "./DangerModal";
 import DicePicker from "./DicePicker";
+import Divider from "./Divider";
 import SortPicker from "./SortPicker";
+
+type Danger = {
+  type: "Delete Account" | "Reset Data";
+  message: string;
+};
 
 const Settings: React.FC = () => {
   const { settings, saveSettings } = useSettings();
+  const { resetData, deleteAccount } = useAuth();
   const [localSettings, setLocalSettings] = useState(settings);
   const [saving, setSaving] = useState<boolean>(false);
+  const [danger, setDanger] = useState<Danger | undefined>(undefined);
 
   const navigate = useNavigate();
 
@@ -63,6 +73,34 @@ const Settings: React.FC = () => {
     }
   };
 
+  const handleReset = () => {
+    setDanger({
+      type: "Reset Data",
+      message:
+        "You are about to reset your data. This will permanently delete all saved sessions and cannot be undone. Do you want to proceed?",
+    });
+  };
+
+  const handleDelete = () => {
+    setDanger({
+      type: "Delete Account",
+      message:
+        "You are about to delete your account. This will delete all your data on our servers and cannot be undone. Do you want to proceed?",
+    });
+  };
+
+  const confirmDelete = () => {
+    //TODO: Reauthenticate user https://firebase.google.com/docs/auth/web/manage-users?hl=en#re-authenticate_a_user
+    console.log("Confirming", danger?.type);
+
+    if (!danger) return;
+
+    if (danger.type === "Reset Data") resetData();
+    if (danger.type === "Delete Account") deleteAccount();
+
+    setDanger(undefined);
+  };
+
   return (
     <div className="settings content">
       <h1 className="floating-text">Settings</h1>
@@ -96,9 +134,36 @@ const Settings: React.FC = () => {
         {saving ? "Saving..." : "Save Settings"}
       </button>
 
-      {/* <Card className="full-width">
-        <h2>Delete Account</h2>
-      </Card> */}
+      {/* <Divider />
+
+      <Card className="full-width">
+        <h2>Danger Zone</h2>
+        <div className="equal-buttons">
+          <button
+            className="btn btn-danger"
+            title="Permanently delete your account."
+            onClick={handleDelete}
+          >
+            Delete Account
+          </button>
+          <button
+            className="btn-outline btn-danger"
+            title="This will delete all saved sessions."
+            onClick={handleReset}
+          >
+            Reset Data
+          </button>
+        </div>
+      </Card>
+
+      <DangerModal
+        message={danger ? danger.message : ""}
+        type={danger ? danger.type : ""}
+        btn="Proceed"
+        show={danger ? true : false}
+        onClose={() => setDanger(undefined)}
+        onDelete={confirmDelete}
+      /> */}
     </div>
   );
 };
