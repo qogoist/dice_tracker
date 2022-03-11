@@ -131,7 +131,7 @@ export const SessionProvider: React.FC = ({ children }) => {
         return;
       }
       updateSession(currentUser, session);
-      navigate(-1);
+      navigate("/");
       return;
     }
 

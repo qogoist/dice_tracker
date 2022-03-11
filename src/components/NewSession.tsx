@@ -11,6 +11,10 @@ import DangerModal from "./DangerModal";
 import { useSettings } from "../contexts/SettingsContext";
 
 const NewSession: React.FC = () => {
+  const { startSession, endSession } = useSession();
+  const { state } = useLocation();
+  const { settings } = useSettings();
+
   const [data, setData] = useState<ISession>({
     name: "",
     game: "",
@@ -26,9 +30,13 @@ const NewSession: React.FC = () => {
 
   const formRef = useRef<HTMLFormElement>(null);
 
-  const { startSession, endSession } = useSession();
-  const { settings } = useSettings();
-  const { state } = useLocation();
+  useEffect(() => {
+    if (state) return;
+
+    settings.preferredDice.forEach(die => {
+      if (!data.stats.usedDice.includes(die)) addDie(die, data.stats);
+    });
+  }, [settings]);
 
   useEffect(() => {
     if (state) setData(state.session);
