@@ -1,7 +1,8 @@
 import { ChartDataset } from "chart.js";
 import React, { useEffect, useState } from "react";
 import { useColor } from "../contexts/ColorContext";
-import { sortDice } from "../helper/sortDice";
+import { useSettings } from "../contexts/SettingsContext";
+import { sortDice } from "../helper/sorting";
 import DonutGraph from "./DonutGraph";
 import DynDicePicker from "./DynDicePicker";
 import LineGraph from "./LineGraph";
@@ -16,6 +17,7 @@ const DiceStatView: React.FC<Props> = ({ stats }) => {
   const [datasets, setDatasets] = useState<ChartDataset<"line">[]>([]);
   const [overviewSets, setOverviewSets] = useState<ChartDataset<"doughnut">[]>([]);
   const [activeChart, setActiveChart] = useState<Dice | "Overview">("Overview");
+  const { settings } = useSettings();
   const colors = useColor();
 
   useEffect(() => {
@@ -25,7 +27,7 @@ const DiceStatView: React.FC<Props> = ({ stats }) => {
       let backgroundColor: string[] = [];
 
       stats.usedDice
-        .sort((a, b) => sortDice(a, b, stats.sort ? stats.sort : "desc"))
+        .sort((a, b) => sortDice(a, b, settings.diceSort))
         .forEach((die, i) => {
           data.push(stats[die].rolls);
           borderColor.push(colors.getHSL!(`primary-${8 - i}00`, 0.8));
@@ -96,6 +98,7 @@ const DiceStatView: React.FC<Props> = ({ stats }) => {
         dice={["Overview", ...stats.usedDice]}
         active={activeChart}
         handleChange={handleClick}
+        sort={settings.diceSort}
       />
     </>
   );

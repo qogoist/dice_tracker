@@ -29,13 +29,20 @@ const Signup: React.FC = () => {
       setIsLoading(true);
       setError("");
 
-      await signup(formData?.email, formData?.password);
+      if (!formData || !formData.email || !formData.password)
+        throw new Error("Please fill out the entire form.");
+
+      await signup(formData.email, formData.password);
 
       setIsLoading(false);
       navigate("/");
     } catch (error: any) {
-      console.error(error.message);
-      setError(mapAuthErrorMessage(error.code));
+      let message: string;
+
+      if (error.code) message = mapAuthErrorMessage(error.code);
+      else message = error.message;
+
+      setError(message);
       setIsLoading(false);
     }
   };

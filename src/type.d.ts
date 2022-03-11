@@ -23,9 +23,23 @@ interface IStats {
 
   rolls: IRoll[];
   usedDice: Dice[];
-  sort?: "asc" | "desc";
 }
 
 type Dice = "D4" | "D6" | "D8" | "D10" | "D12" | "D20" | "D100";
+type DiceSortMethods = "asc" | "desc";
 
-type SortMethods = "asc" | "desc";
+type SessionSortMethods =
+  | "latest"
+  | "oldest"
+  | "az-name"
+  | "za-name"
+  | "az-game"
+  | "za-game"
+  | "rolls-asc"
+  | "rolls-desc";
+
+type Settings = {
+  preferredDice: Dice[];
+  diceSort: DiceSortMethods;
+  sessionSort: SessionSortMethods;
+};

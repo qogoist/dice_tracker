@@ -8,8 +8,13 @@ import { useSession } from "../contexts/SessionContext";
 import { getLocalISOString } from "../helper/date";
 import AlertBox from "./AlertBox";
 import DangerModal from "./DangerModal";
+import { useSettings } from "../contexts/SettingsContext";
 
 const NewSession: React.FC = () => {
+  const { startSession, endSession } = useSession();
+  const { state } = useLocation();
+  const { settings } = useSettings();
+
   const [data, setData] = useState<ISession>({
     name: "",
     game: "",
@@ -25,8 +30,13 @@ const NewSession: React.FC = () => {
 
   const formRef = useRef<HTMLFormElement>(null);
 
-  const { startSession, endSession } = useSession();
-  const { state } = useLocation();
+  useEffect(() => {
+    if (state) return;
+
+    settings.preferredDice.forEach(die => {
+      if (!data.stats.usedDice.includes(die)) addDie(die, data.stats);
+    });
+  }, [settings]);
 
   useEffect(() => {
     if (state) setData(state.session);
@@ -162,7 +172,10 @@ const NewSession: React.FC = () => {
           />
           <h2>Choose Dice:</h2>
           <AlertBox type="error" active={err} message="Please select at least one type of die." />
-          <DicePicker handleChange={handleDice} checkedDice={data.stats.usedDice} />
+          <DicePicker
+            handleChange={handleDice}
+            checkedDice={state?.edit ? data.stats.usedDice : settings?.preferredDice}
+          />
           {state ? (
             <button type="submit" className="btn new-session-btn">
               Save Info

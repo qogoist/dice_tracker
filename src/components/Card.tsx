@@ -2,11 +2,16 @@ import React from "react";
 
 type Props = {
   className?: string;
+  title?: string;
 };
 
-const Card: React.FC<Props> = ({ children, className }) => {
+const Card: React.FC<Props> = ({ children, className, title }) => {
   return (
-    <div className={"card" + (className ? ` ${className}` : "")} onClick={e => e.stopPropagation()}>
+    <div
+      className={"card" + (className ? ` ${className}` : "")}
+      title={title ? title : ""}
+      onClick={e => e.stopPropagation()}
+    >
       {children}
     </div>
   );

@@ -6,6 +6,7 @@ import SessionList from "./SessionList";
 import DiceStatView from "./DiceStatView";
 import SessionPreview from "./SessionPreview";
 import { Link } from "react-router-dom";
+import Divider from "./Divider";
 
 const Dashboard: React.FC = () => {
   const { stats, currSession } = useSession();
@@ -24,6 +25,7 @@ const Dashboard: React.FC = () => {
         <DiceStatView stats={stats!} />
       </Card>
       <SessionList />
+      <Divider />
     </div>
   );
 };

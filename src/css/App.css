@@ -90,6 +90,52 @@ input:-internal-autofill-selected {
 }
 
 /* ====================================== */
+/* Divider */
+/* ====================================== */
+
+.divider {
+  --color: hsl(var(--clr-gray-100));
+  --icon-width: 2.5rem;
+  position: relative;
+  margin: 1rem 0;
+  width: 100%;
+  height: 0;
+  filter: drop-shadow(0.1rem 0.1rem 0.25rem hsl(var(--clr-gray-900)));
+}
+
+.divider > svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: var(--icon-width);
+  aspect-ratio: 1;
+  fill: var(--color);
+}
+
+.divider::before {
+  --height: 0.1rem;
+  content: "";
+  position: absolute;
+  width: calc(50% - 0.5 * var(--icon-width));
+  height: var(--height);
+  top: calc(50% - var(--height));
+  right: 0;
+  background: var(--color);
+}
+
+.divider::after {
+  --height: 0.1rem;
+  content: "";
+  position: absolute;
+  width: calc(50% - 0.5 * var(--icon-width));
+  height: var(--height);
+  top: calc(50% - var(--height));
+  left: 0;
+  background: var(--color);
+}
+
+/* ====================================== */
 /* Generic Modal Components */
 /* ====================================== */
 
@@ -204,6 +250,7 @@ input:-internal-autofill-selected {
 }
 
 .btn-outline {
+  background: transparent;
   outline: 0.125em solid hsl(var(--btn-clr));
 }
 
@@ -212,9 +259,25 @@ input:-internal-autofill-selected {
   box-shadow: none;
 }
 
+.btn.icon {
+  display: grid;
+  place-items: center;
+  padding: 0.25em 1em;
+  font-size: 1.25rem;
+}
+
+.btn.full-width {
+  width: 100%;
+}
+
 .btn-danger {
   --btn-clr: var(--clr-gray-100);
   --btn-clr-back: var(--clr-danger-500);
+}
+
+.btn-outline.btn-danger {
+  --btn-clr: var(--clr-danger-500);
+  --btn-clr-back: var(--clr-gray-100);
 }
 
 .btn-neutral {
@@ -265,11 +328,16 @@ input:-internal-autofill-selected {
   transform: scale(0.95);
 }
 
-.btn.icon {
-  display: grid;
-  place-items: center;
-  padding: 0.25em 1em;
-  font-size: 1.25rem;
+.equal-buttons {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.equal-buttons > button {
+  width: 100%;
 }
 
 /* ====================================== */
@@ -681,6 +749,10 @@ input:-internal-autofill-selected {
     "session-list";
 }
 
+.dashboard > .divider {
+  display: none;
+}
+
 .dashboard > .stats {
   grid-area: stats;
   overflow: hidden;
@@ -727,11 +799,13 @@ input:-internal-autofill-selected {
   grid-area: current;
 }
 
+/* ====================================== */
+/* Session Preview */
+/* ====================================== */
 .session-preview {
   --card-padding: 1.25rem;
   width: 100%;
   max-width: 100%;
-  direction: ltr;
   transition: transform var(--t-speed-4) ease-out;
   hyphens: auto;
 
@@ -770,6 +844,7 @@ input:-internal-autofill-selected {
 
   display: grid;
   place-content: center;
+  filter: none;
 }
 .rolls > .num {
   font-size: 1.1rem;
@@ -832,6 +907,10 @@ input:-internal-autofill-selected {
 .preview-content > .right {
   justify-self: end;
 }
+
+/* ====================================== */
+/* Floating Text */
+/* ====================================== */
 
 .floating-text {
   color: hsl(var(--clr-primary-100));
@@ -1009,6 +1088,7 @@ input:-internal-autofill-selected {
   height: 100%;
   max-width: 100%;
   color: inherit;
+  filter: drop-shadow(0.2rem 0.2rem 0.2rem hsl(var(--clr-gray-900)));
 }
 
 .svg-container svg {
@@ -1019,6 +1099,31 @@ input:-internal-autofill-selected {
 
 .svg-container.desktop {
   display: none;
+}
+
+/* ====================================== */
+/* Settings */
+/* ====================================== */
+
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.sort-select {
+  width: calc(100% - 2rem);
+  padding: 0.25rem 0rem;
+  color: inherit;
+  font-size: 1rem;
+  border: none;
+  border-bottom: 1px solid hsl(var(--clr-gray-800) / 0.8);
+  background: transparent;
+}
+
+.sort-select > option {
+  background: hsl(var(--clr-gray-100));
 }
 
 /* ====================================== */
@@ -1052,10 +1157,17 @@ input:-internal-autofill-selected {
   .dashboard {
     width: 100%;
     grid-template-columns: auto 1fr 3.5fr;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto auto 1fr;
     grid-template-areas:
       "... current stats"
+      "... divider stats"
       "session-list session-list stats";
+  }
+
+  .dashboard > .divider {
+    display: block;
+    grid-area: divider;
+    margin: 1rem 0 0.5rem 0;
   }
 
   .session-list {
@@ -1068,6 +1180,10 @@ input:-internal-autofill-selected {
     padding: 0rem var(--offset);
     padding-top: calc(0.5 * var(--offset));
     transform: translateX(calc(-1 * var(--offset)));
+  }
+
+  .session-list > * {
+    direction: ltr;
   }
 
   .session-grid {

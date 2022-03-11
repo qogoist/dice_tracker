@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import { sortDice } from "../helper/sortDice";
+import { sortDice } from "../helper/sorting";
 import DiceButton from "./DiceButton";
 
 type Props = {
   dice: (Dice | "Overview")[];
   active?: Dice | "Overview";
-  sort?: SortMethods;
+  sort?: DiceSortMethods;
   handleChange: (e: React.FormEvent<HTMLButtonElement>) => any;
 };
 

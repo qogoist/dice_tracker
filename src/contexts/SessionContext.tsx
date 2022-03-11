@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { QuerySnapshot } from "@firebase/firestore";
 import { addSession, deleteSession, getAllSessions, updateSession } from "../api/session";
-import { sortDice } from "../helper/sortDice";
+import { sortDice } from "../helper/sorting";
 import { useAuth } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
+import { AllDice } from "../helper/globals";
 
 export type ISessionContext = {
   currSession: ISession | undefined;
@@ -18,13 +19,15 @@ export type ISessionContext = {
   getSession: ((id: string) => ISession | undefined) | null;
 };
 
-export const SessionContext = createContext<Partial<ISessionContext>>({});
+export const SessionContext = createContext<ISessionContext | undefined>(undefined);
 
 export const useSession = () => {
-  return useContext(SessionContext);
-};
+  const context = useContext(SessionContext);
 
-const allDice: Dice[] = ["D4", "D6", "D8", "D10", "D12", "D20", "D100"];
+  if (context === undefined) throw new Error("Context not defined");
+
+  return context;
+};
 
 export const SessionProvider: React.FC = ({ children }) => {
   const { currentUser } = useAuth();
@@ -33,8 +36,7 @@ export const SessionProvider: React.FC = ({ children }) => {
   const [stats, setStats] = useState<IStats>(() => {
     return initializeStats({
       rolls: [],
-      usedDice: allDice,
-      sort: "desc",
+      usedDice: AllDice,
     });
   });
 
@@ -83,7 +85,7 @@ export const SessionProvider: React.FC = ({ children }) => {
 
     let stats = initializeStats({
       rolls: [],
-      usedDice: allDice,
+      usedDice: AllDice,
     });
 
     loadSessions.forEach(data => {
@@ -128,7 +130,7 @@ export const SessionProvider: React.FC = ({ children }) => {
         return;
       }
       updateSession(currentUser, session);
-      navigate(-1);
+      navigate("/");
       return;
     }
 
@@ -176,7 +178,7 @@ export const SessionProvider: React.FC = ({ children }) => {
   };
 
   function initializeStats(localStats: IStats): IStats {
-    for (const die of allDice) {
+    for (const die of AllDice) {
       const isUsed = localStats.usedDice.includes(die);
       const exists = localStats[die];
 

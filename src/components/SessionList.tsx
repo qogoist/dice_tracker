@@ -2,10 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import { useSession } from "../contexts/SessionContext";
+import { useSettings } from "../contexts/SettingsContext";
+import { sortSessions } from "../helper/sorting";
 import SessionPreview from "./SessionPreview";
 
 const SessionList: React.FC = () => {
   const { sessions } = useSession();
+  const { settings } = useSettings();
 
   return (
     <div className="session-list">
@@ -17,7 +20,9 @@ const SessionList: React.FC = () => {
           </p>
         </>
       ) : (
-        sessions?.map(session => <SessionPreview key={session._id} session={session} />)
+        sessions
+          .sort((a, b) => sortSessions(a, b, settings.sessionSort))
+          .map(session => <SessionPreview key={session._id} session={session} />)
       )}
     </div>
   );
