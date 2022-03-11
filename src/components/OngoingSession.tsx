@@ -51,7 +51,8 @@ const OngoingSession: React.FC = () => {
   };
 
   const handleEndSession = () => {
-    endSession?.(session!);
+    if (state) endSession?.(session!, true);
+    else endSession?.(session!);
   };
 
   const handleEdit = () => {
