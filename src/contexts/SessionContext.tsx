@@ -33,7 +33,6 @@ export const SessionProvider: React.FC = ({ children }) => {
   const { currentUser } = useAuth();
   const [currSession, setCurrSession] = useState<ISession>();
   const [sessions, setSessions] = useState<ISession[]>([]);
-
   const [stats, setStats] = useState<IStats>(() => {
     return initializeStats({
       rolls: [],
