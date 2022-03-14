@@ -1,5 +1,13 @@
 import { db } from "../firebase";
-import { collection, onSnapshot, addDoc, deleteDoc, doc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  addDoc,
+  deleteDoc,
+  doc,
+  setDoc,
+  getDocs,
+} from "firebase/firestore";
 import { User } from "firebase/auth";
 
 export const getAllSessions = (user: User, observer: any) => {
@@ -32,6 +40,18 @@ export const updateSession = async (user: User, session: any): Promise<any> => {
 export const deleteSession = async (user: User, id: string): Promise<any> => {
   try {
     await deleteDoc(doc(db, "users", user.uid, "sessions", id));
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const resetSessions = async (user: User): Promise<any> => {
+  try {
+    const sessions = await getDocs(collection(db, "users", user.uid, "sessions"));
+
+    sessions.docs.map(doc => {
+      deleteSession(user, doc.id);
+    });
   } catch (error: any) {
     throw new Error(error);
   }

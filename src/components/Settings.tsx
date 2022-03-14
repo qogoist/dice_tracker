@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useSettings } from "../contexts/SettingsContext";
+import { mapAuthErrorMessage } from "../helper/AuthErrorMessage";
+import AuthModal from "./AuthModal";
 import Card from "./Card";
 import DangerModal from "./DangerModal";
 import DicePicker from "./DicePicker";
@@ -19,6 +21,12 @@ const Settings: React.FC = () => {
   const [localSettings, setLocalSettings] = useState(settings);
   const [saving, setSaving] = useState<boolean>(false);
   const [danger, setDanger] = useState<Danger | undefined>(undefined);
+  const [authenticate, setAuthenticate] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [credentials, setCredentials] = useState<{ email: string; password: string }>({
+    email: "",
+    password: "",
+  });
 
   const navigate = useNavigate();
 
@@ -81,24 +89,34 @@ const Settings: React.FC = () => {
     });
   };
 
-  const handleDelete = () => {
-    setDanger({
-      type: "Delete Account",
-      message:
-        "You are about to delete your account. This will delete all your data on our servers and cannot be undone. Do you want to proceed?",
-    });
-  };
-
   const confirmDelete = () => {
-    //TODO: Reauthenticate user https://firebase.google.com/docs/auth/web/manage-users?hl=en#re-authenticate_a_user
     console.log("Confirming", danger?.type);
 
     if (!danger) return;
 
     if (danger.type === "Reset Data") resetData();
-    if (danger.type === "Delete Account") deleteAccount();
 
     setDanger(undefined);
+  };
+
+  const handleAuthChange = (e: React.FormEvent<HTMLInputElement>) => {
+    const key = e.currentTarget.name;
+    const value = e.currentTarget.value;
+
+    setCredentials({
+      ...credentials,
+      [key]: value,
+    });
+  };
+
+  const handleAuthSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const test = await deleteAccount(credentials);
+    } catch (error: any) {
+      setError(mapAuthErrorMessage(error.code));
+    }
   };
 
   return (
@@ -134,7 +152,7 @@ const Settings: React.FC = () => {
         {saving ? "Saving..." : "Save Settings"}
       </button>
 
-      {/* <Divider />
+      <Divider />
 
       <Card className="full-width">
         <h2>Danger Zone</h2>
@@ -142,7 +160,7 @@ const Settings: React.FC = () => {
           <button
             className="btn btn-danger"
             title="Permanently delete your account."
-            onClick={handleDelete}
+            onClick={() => setAuthenticate(true)}
           >
             Delete Account
           </button>
@@ -163,7 +181,15 @@ const Settings: React.FC = () => {
         show={danger ? true : false}
         onClose={() => setDanger(undefined)}
         onDelete={confirmDelete}
-      /> */}
+      />
+
+      <AuthModal
+        show={authenticate}
+        error={error}
+        onClose={() => setAuthenticate(false)}
+        onChange={handleAuthChange}
+        onSubmit={handleAuthSubmit}
+      />
     </div>
   );
 };

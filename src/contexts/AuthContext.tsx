@@ -5,10 +5,15 @@ import {
   sendPasswordResetEmail,
   User,
   deleteUser,
+  reauthenticateWithCredential,
+  AuthCredential,
+  EmailAuthProvider,
 } from "firebase/auth";
 
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import { resetSessions } from "../api/session";
+import { resetSettings } from "../api/settings";
 
 export type IAuthContext = {
   currentUser: User;
@@ -17,7 +22,7 @@ export type IAuthContext = {
   logout: () => Promise<any>;
   resetPassword: (email: string) => Promise<any>;
   resetData: () => void;
-  deleteAccount: () => Promise<any>;
+  deleteAccount: (credentials: { email: string; password: string }) => Promise<any>;
 };
 
 const AuthContext = createContext<IAuthContext | undefined>(undefined);
@@ -52,17 +57,19 @@ export const AuthProvider: React.FC = ({ children }) => {
   };
 
   const resetData = () => {
-    console.log("Currently not working 😟");
+    resetSessions(currentUser);
   };
 
-  const deleteAccount = async (): Promise<any> => {
-    //TODO: Reauthenticate user https://firebase.google.com/docs/auth/web/manage-users?hl=en#re-authenticate_a_user
+  const deleteAccount = async (credentials: { email: string; password: string }): Promise<any> => {
+    const authCredentials = EmailAuthProvider.credential(credentials.email, credentials.password);
 
-    await deleteUser(currentUser)
-      .then(() => navigate("/signup"))
-      .catch((error: any) => {
-        console.log(error);
-      });
+    await reauthenticateWithCredential(currentUser, authCredentials)
+      .then(() => {
+        resetSessions(currentUser);
+        resetSettings(currentUser);
+      })
+      .then(() => deleteUser(currentUser))
+      .then(() => navigate("/signup"));
   };
 
   useEffect(() => {

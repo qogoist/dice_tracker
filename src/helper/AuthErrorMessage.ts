@@ -16,6 +16,10 @@ export const mapAuthErrorMessage = (code: string): string => {
       message = "To many requests. Please try again later.";
       break;
 
+    case "auth/user-mismatch":
+      message = "The given credentials do not match the logged in user. Please try again.";
+      break;
+
     default:
       break;
   }

@@ -16,7 +16,7 @@ const DangerModal: React.FC<Props> = ({ show, onClose, onDelete, message, type, 
   return (
     <Backdrop show={show} onClick={onClose}>
       <Modal enabled={show}>
-        <h1>{type}</h1>
+        <h2>{type}</h2>
         <div className="modal-content">
           <p>{message}</p>
           <button className="btn btn-danger" onClick={onDelete}>
