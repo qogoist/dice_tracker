@@ -51,7 +51,7 @@ header {
   background: hsl(var(--clr-primary-500));
   text-align: left;
   width: 100%;
-  padding: 1rem 1.5rem;
+  padding: 1rem;
   z-index: 1;
 }
 
@@ -1219,6 +1219,7 @@ input:-internal-autofill-selected {
     display: grid;
     gap: 0rem;
     grid-template-columns: 2rem auto auto 2rem;
+    padding: 1rem 1.5rem;
   }
 
   .logo {
