@@ -545,6 +545,7 @@ input:-internal-autofill-selected {
   position: absolute;
   top: 0;
   left: 0;
+  padding: 0.5em 0;
   pointer-events: none;
   transform-origin: top left;
   transition: transform var(--t-speed-4) ease-in-out, color var(--t-speed-4) linear;
@@ -553,6 +554,7 @@ input:-internal-autofill-selected {
 .form-label input:focus-visible ~ label,
 .form-label input:valid ~ label,
 .form-label input:not(:placeholder-shown) ~ label {
+  padding: 0;
   transform: translateY(-100%) scale(0.9);
   color: hsl(var(--card-clr-accent, var(--clr-primary-500)));
 }
@@ -1111,6 +1113,10 @@ input:-internal-autofill-selected {
   flex-direction: column;
   gap: 1rem;
   align-items: center;
+}
+
+.settings > * {
+  flex-shrink: 0;
 }
 
 .sort-select {

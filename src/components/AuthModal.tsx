@@ -18,7 +18,7 @@ const AuthModal: React.FC<Props> = ({ show, error, onClose, onChange, onSubmit }
     <Backdrop show={show} onClick={onClose}>
       <Modal enabled={show}>
         <h2>Authenticate</h2>
-        <form className="modal-content" onSubmit={onSubmit}>
+        <form className="modal-content" onSubmit={onSubmit} id="auth-form">
           <AlertBox active={error ? true : false} type="error" message={error} />
           <FormLabel
             description="Email"

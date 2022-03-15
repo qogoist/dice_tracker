@@ -1,13 +1,16 @@
+import { stringify } from "@firebase/util";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useSettings } from "../contexts/SettingsContext";
 import { mapAuthErrorMessage } from "../helper/AuthErrorMessage";
+import AlertBox from "./AlertBox";
 import AuthModal from "./AuthModal";
 import Card from "./Card";
 import DangerModal from "./DangerModal";
 import DicePicker from "./DicePicker";
 import Divider from "./Divider";
+import FormLabel from "./FormLabel";
 import SortPicker from "./SortPicker";
 
 type Danger = {
@@ -17,16 +20,19 @@ type Danger = {
 
 const Settings: React.FC = () => {
   const { settings, saveSettings } = useSettings();
-  const { resetData, deleteAccount } = useAuth();
+  const { resetData, deleteAccount, changePassword } = useAuth();
   const [localSettings, setLocalSettings] = useState(settings);
   const [saving, setSaving] = useState<boolean>(false);
   const [danger, setDanger] = useState<Danger | undefined>(undefined);
   const [authenticate, setAuthenticate] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [credentials, setCredentials] = useState<{ email: string; password: string }>({
-    email: "",
-    password: "",
-  });
+  const [passError, setPassError] = useState<string>("");
+  const [success, setSuccess] = useState<string>("");
+  const [modalPromise, setModalPromise] = useState<{ resolve?: any; reject?: any }>({});
+  const [newPass, setNewPass] = useState<{
+    "new-password": string;
+    "confirm-new-password": string;
+  }>({ "new-password": "", "confirm-new-password": "" });
 
   const navigate = useNavigate();
 
@@ -99,23 +105,67 @@ const Settings: React.FC = () => {
     setDanger(undefined);
   };
 
-  const handleAuthChange = (e: React.FormEvent<HTMLInputElement>) => {
-    const key = e.currentTarget.name;
-    const value = e.currentTarget.value;
+  const handleDeleteSubmit = async () => {
+    setAuthenticate(true);
+    const value = await modalClose();
 
-    setCredentials({
-      ...credentials,
-      [key]: value,
-    });
+    console.log("Promise", value);
+
+    if (value) {
+      try {
+        await deleteAccount(value);
+      } catch (error: any) {
+        setError(mapAuthErrorMessage(error.code));
+      }
+    }
   };
 
   const handleAuthSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    const data = new FormData(e.currentTarget);
+    const cred = { email: data.get("email") as string, password: data.get("password") as string };
+
+    modalPromise.resolve(cred);
+  };
+
+  const handleAuthAbort = async () => {
+    setAuthenticate(false);
+    setError("");
+    modalPromise.resolve(false);
+  };
+
+  const handlePassChange = (e: React.FormEvent<HTMLInputElement>) => {
+    const key = e.currentTarget.name;
+    const value = e.currentTarget.value;
+
+    setNewPass({
+      ...newPass,
+      [key]: value,
+    });
+  };
+
+  const modalClose = async (): Promise<{ email: string; password: string }> => {
+    return new Promise((resolve, reject) => {
+      console.log("Promise and whatnot.");
+      setModalPromise({ resolve, reject });
+    });
+  };
+
+  const handlePassSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (newPass["confirm-new-password"] !== newPass["new-password"])
+      return setPassError("Passwords do not match.");
+
+    setAuthenticate(true);
+    const value = await modalClose();
+
     try {
-      const test = await deleteAccount(credentials);
+      changePassword(value, newPass["new-password"]);
+      setSuccess("Password successfully changed.");
     } catch (error: any) {
-      setError(mapAuthErrorMessage(error.code));
+      console.log(error);
     }
   };
 
@@ -154,13 +204,40 @@ const Settings: React.FC = () => {
 
       <Divider />
 
+      <h1 className="floating-text">Account Settings</h1>
+
+      <Card className="full-width">
+        <h2>Change Password</h2>
+        <form onSubmit={handlePassSubmit} className="auth-form">
+          <AlertBox active={passError ? true : false} type="error" message={passError} />
+          <AlertBox active={success ? true : false} type="success" message={success} />
+          <FormLabel
+            description="New Password"
+            name="new-password"
+            type="password"
+            isRequired={true}
+            handleChange={handlePassChange}
+          />
+          <FormLabel
+            description="Confirm Password"
+            name="confirm-new-password"
+            type="password"
+            isRequired={true}
+            handleChange={handlePassChange}
+          />
+          <button type="submit" className="btn">
+            Confirm
+          </button>
+        </form>
+      </Card>
+
       <Card className="full-width">
         <h2>Danger Zone</h2>
         <div className="equal-buttons">
           <button
             className="btn btn-danger"
             title="Permanently delete your account."
-            onClick={() => setAuthenticate(true)}
+            onClick={handleDeleteSubmit}
           >
             Delete Account
           </button>
@@ -186,8 +263,10 @@ const Settings: React.FC = () => {
       <AuthModal
         show={authenticate}
         error={error}
-        onClose={() => setAuthenticate(false)}
-        onChange={handleAuthChange}
+        onClose={handleAuthAbort}
+        onChange={() => {
+          return;
+        }}
         onSubmit={handleAuthSubmit}
       />
     </div>

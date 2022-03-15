@@ -8,6 +8,7 @@ import {
   reauthenticateWithCredential,
   AuthCredential,
   EmailAuthProvider,
+  updatePassword,
 } from "firebase/auth";
 
 import { auth } from "../firebase";
@@ -21,6 +22,10 @@ export type IAuthContext = {
   login: (email: string, pass: string) => Promise<any>;
   logout: () => Promise<any>;
   resetPassword: (email: string) => Promise<any>;
+  changePassword: (
+    credentials: { email: string; password: string },
+    newPass: string
+  ) => Promise<any>;
   resetData: () => void;
   deleteAccount: (credentials: { email: string; password: string }) => Promise<any>;
 };
@@ -56,6 +61,17 @@ export const AuthProvider: React.FC = ({ children }) => {
     return sendPasswordResetEmail(auth, email);
   };
 
+  const changePassword = async (
+    credentials: { email: string; password: string },
+    newPass: string
+  ): Promise<any> => {
+    const authCredentials = EmailAuthProvider.credential(credentials.email, credentials.password);
+
+    await reauthenticateWithCredential(currentUser, authCredentials).then(() => {
+      updatePassword(currentUser, newPass);
+    });
+  };
+
   const resetData = () => {
     resetSessions(currentUser);
   };
@@ -87,6 +103,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     login,
     logout,
     resetPassword,
+    changePassword,
     resetData,
     deleteAccount,
   };
