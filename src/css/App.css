@@ -51,7 +51,7 @@ header {
   background: hsl(var(--clr-primary-500));
   text-align: left;
   width: 100%;
-  padding: 1rem 1.5rem;
+  padding: 1rem;
   z-index: 1;
 }
 
@@ -177,7 +177,8 @@ input:-internal-autofill-selected {
   gap: 1rem;
 }
 
-.modal > h1 {
+.modal > h1,
+.modal > h2 {
   grid-area: title;
   place-self: start start;
 }
@@ -544,6 +545,7 @@ input:-internal-autofill-selected {
   position: absolute;
   top: 0;
   left: 0;
+  padding: 0.5em 0;
   pointer-events: none;
   transform-origin: top left;
   transition: transform var(--t-speed-4) ease-in-out, color var(--t-speed-4) linear;
@@ -552,6 +554,7 @@ input:-internal-autofill-selected {
 .form-label input:focus-visible ~ label,
 .form-label input:valid ~ label,
 .form-label input:not(:placeholder-shown) ~ label {
+  padding: 0;
   transform: translateY(-100%) scale(0.9);
   color: hsl(var(--card-clr-accent, var(--clr-primary-500)));
 }
@@ -1112,6 +1115,10 @@ input:-internal-autofill-selected {
   align-items: center;
 }
 
+.settings > * {
+  flex-shrink: 0;
+}
+
 .sort-select {
   width: calc(100% - 2rem);
   padding: 0.25rem 0rem;
@@ -1219,6 +1226,7 @@ input:-internal-autofill-selected {
     display: grid;
     gap: 0rem;
     grid-template-columns: 2rem auto auto 2rem;
+    padding: 1rem 1.5rem;
   }
 
   .logo {
