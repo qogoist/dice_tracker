@@ -85,6 +85,25 @@ input:-internal-autofill-selected {
   transition: background 5000s linear, color 5000s linear;
 }
 
+*::-webkit-scrollbar {
+  width: 1rem;
+}
+
+*::-webkit-scrollbar-track,
+*::-webkit-scrollbar-thumb {
+  border: 0.25rem solid transparent;
+  background-clip: padding-box;
+  border-radius: 100vw;
+}
+
+*::-webkit-scrollbar-track {
+  background-color: hsl(var(--clr-gray-100) / 0.3);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--clr-primary-700) / 0.9);
+}
+
 .content {
   width: clamp(20%, 25rem, 100%);
 }
@@ -772,25 +791,6 @@ input:-internal-autofill-selected {
   flex-direction: column;
   gap: 1rem;
   padding-bottom: 1rem;
-}
-
-.session-list::-webkit-scrollbar {
-  width: 1rem;
-}
-
-.session-list::-webkit-scrollbar-track,
-.session-list::-webkit-scrollbar-thumb {
-  border: 0.25rem solid transparent;
-  background-clip: padding-box;
-  border-radius: 100vw;
-}
-
-.session-list::-webkit-scrollbar-track {
-  background-color: hsl(var(--clr-gray-100) / 0.3);
-}
-
-.session-list::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--clr-primary-700) / 0.9);
 }
 
 .dashboard > .current-session {
